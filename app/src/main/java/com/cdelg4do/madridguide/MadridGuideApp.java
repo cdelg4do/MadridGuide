@@ -11,7 +11,8 @@ import java.lang.ref.WeakReference;
 
 public class MadridGuideApp extends Application {
 
-    // App context (weak reference so that we avoid memory leaks when clossing the app)
+    // App context: weak reference so that we avoid memory leaks when closing the app
+    // (see http://bit.ly/6LRzfx)
     private static WeakReference<Context> appContext;
 
     // Entry point of the app
