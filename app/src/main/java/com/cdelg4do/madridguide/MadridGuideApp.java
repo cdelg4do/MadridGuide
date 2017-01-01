@@ -3,6 +3,10 @@ package com.cdelg4do.madridguide;
 import android.app.Application;
 import android.content.Context;
 
+import com.cdelg4do.madridguide.manager.db.ShopDAO;
+import com.cdelg4do.madridguide.model.Shop;
+import com.squareup.picasso.Picasso;
+
 import java.lang.ref.WeakReference;
 
 /**
@@ -22,6 +26,13 @@ public class MadridGuideApp extends Application {
 
         // Keep a copy of the application context
         appContext = new WeakReference<Context>( getApplicationContext() );
+
+        // Settings for Picasso
+        Picasso.with(getApplicationContext()).setLoggingEnabled(true);
+        Picasso.with(getApplicationContext()).setIndicatorsEnabled(true);
+
+        // Populate the database
+        insertTestDataIntoTheDatabase();
     }
 
     // Override to warn about memory warnings
@@ -33,5 +44,21 @@ public class MadridGuideApp extends Application {
     // Get the app context
     public static Context getAppContext() {
         return appContext.get();
+    }
+
+
+    private void insertTestDataIntoTheDatabase() {
+
+        ShopDAO shopDAO = new ShopDAO( getApplicationContext() );
+
+        shopDAO.deleteAll();
+
+        for (int i=0; i<30; i++) {
+
+            Shop shop = new Shop(i, "Shop "+i);
+            shop.setLogoImgUrl("http://lorempixel.com/200/200/");
+
+            shopDAO.insert(shop);
+        }
     }
 }

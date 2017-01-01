@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                xmlns:tools="http://schemas.android.com/tools">
+
+    <TextView
+        android:id="@+id/row_shop_name"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_centerVertical="true"
+        android:gravity="center_vertical|center_horizontal"
+        tools:text="Shop Name"/>
+
+    <ImageView
+        android:id="@+id/row_shop_logo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerVertical="true"
+        tools:src="@android:drawable/ic_menu_camera"/>
+
+</RelativeLayout>

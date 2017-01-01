@@ -1,9 +1,12 @@
 package com.cdelg4do.madridguide.model;
 
+import java.io.Serializable;
+
 /**
  * This class represents a shop in the application.
+ * It implements the Serializable interface so that it can be passed in an Intent.
  */
-public class Shop {
+public class Shop implements Serializable {
 
     private long id;
     private String name;

@@ -5,4 +5,6 @@ package com.cdelg4do.madridguide.util;
  */
 public class Constants {
     public static String appName = "com.cdelg4do.madridguide";
+
+    public static String INTENT_KEY_DETAIL_SHOP = appName + ".INTENT_KEY_DETAIL_SHOP";
 }
