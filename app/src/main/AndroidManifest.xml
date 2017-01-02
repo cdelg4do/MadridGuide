@@ -22,6 +22,12 @@
         </activity>
         <activity android:name=".activity.ShopDetailActivity">
         </activity>
+
+        <!-- Content providers -->
+        <provider
+            android:authorities="com.cdelg4do.madridguide.provider"
+            android:name=".manager.db.provider.MadridGuideProvider"/>
+
     </application>
 
 </manifest>

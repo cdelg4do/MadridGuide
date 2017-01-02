@@ -105,8 +105,8 @@ public class ShopDAO implements DAOPersistable<Shop> {
      * Deletes all Shops from the database.
      */
     @Override
-    public void deleteAll() {
-        db.delete(TABLE_SHOP, null, null);
+    public int deleteAll() {
+        return db.delete(TABLE_SHOP, null, null);
     }
 
 
@@ -118,6 +118,22 @@ public class ShopDAO implements DAOPersistable<Shop> {
     public Cursor queryCursor() {
 
         Cursor c = db.query(TABLE_SHOP, ALL_COLUMNS_SHOP, null, null, null, null, KEY_SHOP_ID);
+
+        if (c != null && c.getCount() > 0)
+            c.moveToFirst();
+
+        return c;
+    }
+
+
+    /**
+     * Gets a cursor to all rows from the Shop table with an specific id.
+     */
+    @Nullable
+    @Override
+    public Cursor queryCursor(long id) {
+
+        Cursor c = db.query(TABLE_SHOP, ALL_COLUMNS_SHOP, KEY_SHOP_ID + " = ?", new String[]{"" + id}, null, null, null);
 
         if (c != null && c.getCount() > 0)
             c.moveToFirst();
@@ -192,6 +208,25 @@ public class ShopDAO implements DAOPersistable<Shop> {
         cv.put(KEY_SHOP_URL, shop.getUrl());
 
         return cv;
+    }
+
+    // Maps all data from a given ContentValues to a new Shop object
+    @NonNull
+    public Shop getShopFromContentValues(@NonNull ContentValues cv) {
+
+        final Shop shop = new Shop(1, "");
+
+        //shop.setId(cv.getAsInteger(KEY_SHOP_ID));
+        shop.setName(cv.getAsString(KEY_SHOP_NAME));
+        shop.setAddress(cv.getAsString(KEY_SHOP_ADDRESS));
+        shop.setDescription(cv.getAsString(KEY_SHOP_DESCRIPTION));
+        shop.setImageUrl(cv.getAsString(KEY_SHOP_IMAGE_URL));
+        shop.setLogoImgUrl(cv.getAsString(KEY_SHOP_LOGO_IMAGE_URL));
+        shop.setLatitude(cv.getAsFloat(KEY_SHOP_LATITUDE));
+        shop.setLongitude(cv.getAsFloat(KEY_SHOP_LONGITUDE));
+        shop.setUrl(cv.getAsString(KEY_SHOP_URL));
+
+        return shop;
     }
 
     // Gets a Shop object corresponding to the current position of a given cursor
