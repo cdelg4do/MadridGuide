@@ -51,10 +51,28 @@ public class MadridGuideProvider extends ContentProvider {
     }
 
     // Gets the type of a given uri
+    // (useful if the provider is going to receive requests from outside the application)
     @Nullable
     @Override
     public String getType(Uri uri) {
-        return null;
+
+        String type = null;
+
+        switch ( uriMatcher.match(uri) ) {
+
+            case SINGLE_SHOP:
+                type = "vnd.android.cursor.item/vnd." + MADRIDGUIDE_PROVIDER;
+                break;
+
+            case ALL_SHOPS:
+                type = "vnd.android.cursor.dir/vnd." + MADRIDGUIDE_PROVIDER;
+                break;
+
+            default:
+                break;
+        }
+
+        return type;
     }
 
     @Nullable
@@ -97,8 +115,8 @@ public class MadridGuideProvider extends ContentProvider {
         switch ( uriMatcher.match(uri) ) {
 
             case ALL_SHOPS:
+                Shop shop = Shop.buildShopFromContentValues(contentValues);
                 ShopDAO shopDAO = new ShopDAO( getContext() );
-                Shop shop = shopDAO.getShopFromContentValues(contentValues);
                 long insertedId = shopDAO.insert(shop);
 
                 if (insertedId == INVALID_ID)

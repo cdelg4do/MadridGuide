@@ -16,7 +16,7 @@ public class ShopsTests extends AndroidTestCase {
 
     public void testCreatingAShopsWithNullListReturnsNonNullShops() {
 
-        Shops sut = Shops.newInstance(null);
+        Shops sut = Shops.buildShopsFromList(null);
 
         assertNotNull(sut);
         assertNotNull( sut.allShops() );
@@ -26,7 +26,7 @@ public class ShopsTests extends AndroidTestCase {
 
         List<Shop> testData = createTestShopList();
 
-        Shops sut = Shops.newInstance(testData);
+        Shops sut = Shops.buildShopsFromList(testData);
 
         assertNotNull(sut);
         assertNotNull(sut.allShops() );

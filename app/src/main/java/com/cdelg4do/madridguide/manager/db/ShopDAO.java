@@ -1,6 +1,5 @@
 package com.cdelg4do.madridguide.manager.db;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,15 +13,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import static com.cdelg4do.madridguide.manager.db.DBConstants.ALL_COLUMNS_SHOP;
-import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_ADDRESS;
-import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_DESCRIPTION;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_ID;
-import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_IMAGE_URL;
-import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_LATITUDE;
-import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_LOGO_IMAGE_URL;
-import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_LONGITUDE;
-import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_NAME;
-import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_URL;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.TABLE_SHOP;
 
 /**
@@ -63,7 +54,7 @@ public class ShopDAO implements DAOPersistable<Shop> {
         long id = DBManager.INVALID_ID; // If the insert succeeds, will be replaced with the id of the new record
 
         try {
-            id = db.insert(TABLE_SHOP, null, getContentValuesFromShop(shop) );
+            id = db.insert(TABLE_SHOP, null, shop.toContentValues() );
             shop.setId(id);
             db.setTransactionSuccessful();  // Commit the transaction
         }
@@ -158,7 +149,7 @@ public class ShopDAO implements DAOPersistable<Shop> {
         else
             return null;
 
-        Shop shop = getShopFromCursor(c);
+        Shop shop = Shop.buildShopFromCursor(c);
         return shop;
     }
 
@@ -180,7 +171,7 @@ public class ShopDAO implements DAOPersistable<Shop> {
 
         c.moveToFirst();
         do {
-            Shop newShop = getShopFromCursor(c);
+            Shop newShop = Shop.buildShopFromCursor(c);
             shopList.add(newShop);
         }
         while ( c.moveToNext() );
@@ -191,6 +182,7 @@ public class ShopDAO implements DAOPersistable<Shop> {
 
     // Auxiliary methods:
 
+    /*
     // Maps all data from a given Shop object to a new ContentValues object
     // (to use with SQL insert)
     @NonNull
@@ -257,4 +249,6 @@ public class ShopDAO implements DAOPersistable<Shop> {
 
         return shop;
     }
+    */
+
 }

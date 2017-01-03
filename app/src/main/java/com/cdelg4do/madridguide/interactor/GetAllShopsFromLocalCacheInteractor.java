@@ -48,7 +48,7 @@ public class GetAllShopsFromLocalCacheInteractor {
             public void run() {
 
                 List<Shop> shopList = new ShopDAO(context).query();
-                final Shops shops = Shops.newInstance(shopList);
+                final Shops shops = Shops.buildShopsFromList(shopList);
 
                 MainThread.run(new Runnable() {
                     @Override

@@ -1,8 +1,10 @@
 package com.cdelg4do.madridguide.model;
 
+import android.database.Cursor;
 import android.support.annotation.NonNull;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -10,57 +12,82 @@ import java.util.List;
  */
 public class Shops implements ShopsIterable, ShopsUpdatable {
 
-    List<Shop> shops;
+    List<Shop> shopList;
 
-    // All constructors are private, use the newInstance() static methods to create an object
+
+    // All constructors are private
+    // (to create an object use the buildShops...() static methods)
     private Shops() {
     }
 
-    private Shops(List<Shop> shops) {
-        this.shops = shops;
+    private Shops(List<Shop> shopList) {
+        this.shopList = shopList;
     }
 
-    public static @NonNull Shops newInstance(@NonNull final List<Shop> shopList) {
 
-        Shops newShops = new Shops(shopList);
-
-        if (shopList == null)
-            newShops.shops = new ArrayList<Shop>();
-
-        return newShops;
-    }
-
-    public static @NonNull Shops newInstance() {
-        return newInstance( new ArrayList<Shop>() );
-    }
+    // Methods from interface ShopsIterable:
 
     @Override
     public long size() {
-        return shops.size();
+        return shopList.size();
     }
 
     @Override
     public Shop get(long index) {
-        return shops.get((int)index);
+        return shopList.get((int)index);
     }
 
     @Override
     public List<Shop> allShops() {
-        return shops;
+        return shopList;
     }
+
+
+    // Methods from interface ShopsUpdatable:
 
     @Override
     public void add(Shop shop) {
-        shops.add(shop);
+        shopList.add(shop);
     }
 
     @Override
     public void delete(Shop shop) {
-        shops.remove(shop);
+        shopList.remove(shop);
     }
 
     @Override
     public void edit(Shop newShop, long index) {
-        shops.set((int)index, newShop);
+        shopList.set((int)index, newShop);
+    }
+
+
+    // Auxiliary methods:
+
+    // Creates a new Shops object from a List of Shop objects
+    public static @NonNull Shops buildShopsFromList(@NonNull final List<Shop> shopList) {
+
+        Shops newShops = new Shops(shopList);
+
+        if (shopList == null)
+            newShops.shopList = new ArrayList<Shop>();
+
+        return newShops;
+    }
+
+    // Creates a new Shops object that contains no Shops
+    public static @NonNull Shops buildShopsEmpty() {
+        return buildShopsFromList( new ArrayList<Shop>() );
+    }
+
+    // Creates a new Shops object from the data in a Cursor
+    public static @NonNull Shops buildShopsFromCursor(@NonNull final Cursor cursor) {
+
+        final List<Shop> shopList = new LinkedList<>();
+
+        while ( cursor.moveToNext() ) {
+            shopList.add( Shop.buildShopFromCursor(cursor) );
+        }
+
+        return Shops.buildShopsFromList(shopList);
     }
 }
