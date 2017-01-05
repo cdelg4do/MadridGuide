@@ -10,6 +10,7 @@ import com.cdelg4do.madridguide.model.Shop;
 
 import static com.cdelg4do.madridguide.util.Constants.INTENT_KEY_DETAIL_SHOP;
 
+
 /**
  * This class manages all the navigation between the activities of the application
  */
@@ -25,6 +26,7 @@ public class Navigator {
 
         final Intent i = new Intent(mainActivity, ShopsActivity.class);
         mainActivity.startActivity(i);
+
         return i;
     }
 
@@ -34,11 +36,12 @@ public class Navigator {
      * @param shopsActivity context for the intent created during the operation
      * @return              a reference to the intent created (useful for testing)
      */
-    public static Intent navigateFromShopsActivityToShopDetailActivity(final @NonNull Shop shop, final ShopsActivity shopsActivity) {
+    public static Intent navigateFromShopsActivityToShopDetailActivity(final ShopsActivity shopsActivity, final @NonNull Shop shop) {
 
         final Intent i = new Intent(shopsActivity, ShopDetailActivity.class);
         i.putExtra(INTENT_KEY_DETAIL_SHOP,shop);
         shopsActivity.startActivity(i);
+
         return i;
     }
 }

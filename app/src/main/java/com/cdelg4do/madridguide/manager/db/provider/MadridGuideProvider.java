@@ -11,7 +11,7 @@ import android.support.annotation.Nullable;
 import com.cdelg4do.madridguide.manager.db.ShopDAO;
 import com.cdelg4do.madridguide.model.Shop;
 
-import static com.cdelg4do.madridguide.manager.db.DBManager.INVALID_ID;
+import static com.cdelg4do.madridguide.manager.db.ShopDAO.INVALID_ID;
 
 
 /**

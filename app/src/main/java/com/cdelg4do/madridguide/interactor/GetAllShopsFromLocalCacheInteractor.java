@@ -1,14 +1,14 @@
 package com.cdelg4do.madridguide.interactor;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
 
 import com.cdelg4do.madridguide.manager.db.ShopDAO;
 import com.cdelg4do.madridguide.model.Shop;
 import com.cdelg4do.madridguide.model.Shops;
+import com.cdelg4do.madridguide.util.MainThread;
 
 import java.util.List;
+
 
 /**
  * This class is an interactor in charge of:
@@ -23,21 +23,6 @@ public class GetAllShopsFromLocalCacheInteractor {
     public interface OnGetAllShopsFromLocalCacheInteractorCompletion {
 
         void completion(Shops shops);
-    }
-
-    // This auxiliary static class simplifies the task of executing a Runnable on foreground
-    private static class MainThread {
-
-        // Gets a handler of the main thread, then run the received Runnable
-        public static void run(final Runnable runnable) {
-
-            new Handler( Looper.getMainLooper() ).post(new Runnable() {
-                @Override
-                public void run() {
-                    runnable.run();
-                }
-            });
-        }
     }
 
     // Executes the interactor's operations in a given context and with a given listener for the completion

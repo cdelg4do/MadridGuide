@@ -16,10 +16,13 @@ import static com.cdelg4do.madridguide.manager.db.DBConstants.ALL_COLUMNS_SHOP;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_ID;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.TABLE_SHOP;
 
+
 /**
  * This class manages the operations on the Shop table of the database.
  */
 public class ShopDAO implements DAOPersistable<Shop> {
+
+    public static final long INVALID_ID = -1;
 
     private WeakReference<Context> context;
     private DBManager dbManager;
@@ -51,7 +54,7 @@ public class ShopDAO implements DAOPersistable<Shop> {
 
         db.beginTransaction();
 
-        long id = DBManager.INVALID_ID; // If the insert succeeds, will be replaced with the id of the new record
+        long id = INVALID_ID; // If the insert succeeds, will be replaced with the id of the new record
 
         try {
             id = db.insert(TABLE_SHOP, null, shop.toContentValues() );
@@ -97,7 +100,7 @@ public class ShopDAO implements DAOPersistable<Shop> {
      */
     @Override
     public int deleteAll() {
-        return db.delete(TABLE_SHOP, null, null);
+        return db.delete(TABLE_SHOP, "1", null);
     }
 
 

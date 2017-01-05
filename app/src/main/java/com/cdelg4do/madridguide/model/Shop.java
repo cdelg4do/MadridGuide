@@ -16,9 +16,10 @@ import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_LONGITUDE
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_NAME;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_URL;
 
+
 /**
  * This class represents a shop in the application.
- * It implements the Serializable interface so that it can be passed in an Intent.
+ * It implements the Serializable interface so that it can be passed inside an Intent.
  */
 public class Shop implements Serializable {
 

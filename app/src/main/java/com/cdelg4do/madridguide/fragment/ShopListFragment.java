@@ -53,7 +53,7 @@ public class ShopListFragment extends Fragment {
     }
 
 
-    // Set the shops that will be shown in this fragment,
+    // Set the shops that will be shown by this fragment,
     // and then update the fragment UI (by setting an adapter for the fragment's RecyclerView)
     public void setShopsAndUpdateFragmentUI(Shops shops) {
 
@@ -72,11 +72,12 @@ public class ShopListFragment extends Fragment {
         recyclerView.setAdapter(adapter);
 
         // Add an anonymous OnElementClickedListener to the adapter,
-        // that calls this fragment listener's onElementClicked() when a cell is clicked
+        // that calls this fragment's listener when a row/cell is clicked
         adapter.setOnElementClickedListener(new OnElementClickedListener<Shop>() {
 
             @Override
             public void onElementClicked(Shop shop, int position) {
+
                 if (listener != null)
                     listener.onElementClicked(shop,position);
             }

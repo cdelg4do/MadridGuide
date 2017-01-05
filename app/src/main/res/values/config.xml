@@ -1,0 +1,3 @@
+<resources>
+    <string name="shops_url">http://madrid-shops.com/json/getShops.php</string>
+</resources>

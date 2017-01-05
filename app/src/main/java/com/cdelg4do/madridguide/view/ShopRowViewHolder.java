@@ -9,8 +9,6 @@ import android.widget.TextView;
 
 import com.cdelg4do.madridguide.R;
 import com.cdelg4do.madridguide.model.Shop;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
@@ -43,8 +41,8 @@ public class ShopRowViewHolder extends RecyclerView.ViewHolder {
         Picasso.with(context.get())
                 .load( shop.getLogoImgUrl() )
                 .placeholder(android.R.drawable.ic_menu_camera)
-                .memoryPolicy(MemoryPolicy.NO_CACHE)
-                .networkPolicy(NetworkPolicy.NO_CACHE)
+                //.memoryPolicy(MemoryPolicy.NO_CACHE)
+                //.networkPolicy(NetworkPolicy.NO_CACHE)
                 .into(logoImageView);
     }
 

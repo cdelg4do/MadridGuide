@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">MadridGuide</string>
+    <string name="error">ERROR</string>
     <string name="activity_main_btn_shops_txt">Shops</string>
+    <string name="defaultProgressTitle">Please wait</string>
+    <string name="deleteLocalCache_progressMsg">Cleaning local cache...</string>
+    <string name="downloadShops_progressMsg">Downloading shops from server...</string>
+    <string name="downloadShops_errorMsg">Unable to download the shops data, please check your internet connection and try again.</string>
+    <string name="cacheShops_errorMsg">Unable to store the shops data into the local cache, please try again.</string>
 </resources>
