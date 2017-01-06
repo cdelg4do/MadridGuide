@@ -10,4 +10,7 @@ public class Constants {
 
     public static final String PREFS_CACHE_DATE_KEY = "CACHE_DATE";
     public static final int CACHE_MAX_DAYS_LIMIT = 7;
+
+    public static final float MAP_CENTER_LATITUDE = (float) 40.41665363547475;
+    public static final float MAP_CENTER_LONGITUDE = (float) -3.7038104608654976;
 }

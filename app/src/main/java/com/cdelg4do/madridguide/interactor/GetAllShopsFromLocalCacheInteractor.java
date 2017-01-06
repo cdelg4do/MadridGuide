@@ -20,13 +20,13 @@ import java.util.List;
 public class GetAllShopsFromLocalCacheInteractor {
 
     // This interface describes the behavior of a listener waiting for the completion of the background operation
-    public interface OnGetAllShopsFromLocalCacheInteractorCompletion {
+    public interface GetAllShopsFromLocalCacheInteractorListener {
 
-        void completion(Shops shops);
+        void onGetAllShopsFromLocalCacheFinished(Shops shops);
     }
 
     // Executes the interactor's operations in a given context and with a given listener for the completion
-    public void execute(final Context context, final OnGetAllShopsFromLocalCacheInteractorCompletion listener) {
+    public void execute(final Context context, final GetAllShopsFromLocalCacheInteractorListener listener) {
 
         new Thread(new Runnable() {
             @Override
@@ -38,7 +38,7 @@ public class GetAllShopsFromLocalCacheInteractor {
                 MainThread.run(new Runnable() {
                     @Override
                     public void run() {
-                        listener.completion(shops);
+                        listener.onGetAllShopsFromLocalCacheFinished(shops);
                     }
                 });
             }
