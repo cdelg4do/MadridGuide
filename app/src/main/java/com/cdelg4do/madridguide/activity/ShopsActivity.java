@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.cdelg4do.madridguide.R;
 import com.cdelg4do.madridguide.fragment.ShopListFragment;
-import com.cdelg4do.madridguide.interactor.GetAllShopsFromLocalCacheInteractor;
 import com.cdelg4do.madridguide.manager.db.DBConstants;
 import com.cdelg4do.madridguide.manager.db.provider.MadridGuideProvider;
 import com.cdelg4do.madridguide.model.Shop;
@@ -61,7 +60,7 @@ public class ShopsActivity extends AppCompatActivity implements LoaderManager.Lo
         mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.activity_shops_fragment_map);
 
         // Get a reference to the fragment's map object
-        // (is an async call, the map needs to be initiated first so it can be gotten syncronously)
+        // (is an async call, the map needs to be initiated first so it cannot be accessed synchronously)
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
@@ -69,6 +68,7 @@ public class ShopsActivity extends AppCompatActivity implements LoaderManager.Lo
                 setupMap();
             }
         });
+
 
         // Get the shop list fragment
         shopListFragment = (ShopListFragment) getSupportFragmentManager().findFragmentById(R.id.activity_shops_fragment_shops);
@@ -81,22 +81,6 @@ public class ShopsActivity extends AppCompatActivity implements LoaderManager.Lo
 
         LoaderManager loaderManager = getSupportLoaderManager();
         loaderManager.initLoader(SHOPS_LOADER_ID, null, this);
-
-
-        /*
-        // This is an alternate way to load the shop list: using an interactor that loads data from the
-        // database in the background, then manages the data loaded in the foreground:
-
-        new GetAllShopsFromLocalCacheInteractor().execute(this,
-                new GetAllShopsFromLocalCacheInteractor.GetAllShopsFromLocalCacheInteractorListener() {
-
-                    @Override
-                    public void onGetAllShopsFromLocalCacheFinished(Shops shops) {
-                        shopListFragment.setShopsAndUpdateFragmentUI(shops);
-                    }
-                }
-        );
-        */
 
 
         // Add an anonymous OnElementClickedListener to the fragment,
@@ -150,6 +134,7 @@ public class ShopsActivity extends AppCompatActivity implements LoaderManager.Lo
 
         final Shops shops = Shops.buildShopsFromCursor(data);
         shopListFragment.setShopsAndUpdateFragmentUI(shops);
+        addShopMarkers(shops);
     }
 
     // Called when a previously created loader is being reset, and thus making its data unavailable
@@ -184,8 +169,6 @@ public class ShopsActivity extends AppCompatActivity implements LoaderManager.Lo
 
         map.animateCamera( CameraUpdateFactory.newCameraPosition(cameraPosition) );
 
-        // Add the shops to the map
-        addShopMarkers();
 
         // Show the user location
         enableUserLocationOnMap();
@@ -229,6 +212,9 @@ public class ShopsActivity extends AppCompatActivity implements LoaderManager.Lo
     }
 
 
+    /*
+    // Load the shops directly from the caché (database) by using an interactor,
+    // then add the shop markers to the map.
     private void addShopMarkers() {
 
         new GetAllShopsFromLocalCacheInteractor().execute(this,
@@ -245,6 +231,20 @@ public class ShopsActivity extends AppCompatActivity implements LoaderManager.Lo
                 }
         );
 
+    }
+    */
+
+
+    // Add markers to the map, corresponding to the given shops
+    private void addShopMarkers(Shops shops) {
+
+        if (map == null)
+            return;
+
+        List<Shop> shopList = shops.allShops();
+
+        for (Shop shop: shopList)
+            addShopMarker(shop);
     }
 
 
