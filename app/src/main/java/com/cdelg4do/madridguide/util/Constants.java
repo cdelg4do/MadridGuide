@@ -11,6 +11,9 @@ public class Constants {
     public static final String PREFS_CACHE_DATE_KEY = "CACHE_DATE";
     public static final int CACHE_MAX_DAYS_LIMIT = 7;
 
-    public static final float MAP_CENTER_LATITUDE = (float) 40.41665363547475;
-    public static final float MAP_CENTER_LONGITUDE = (float) -3.7038104608654976;
+    public static final float INITIAL_MAP_LATITUDE = (float) 40.41665363547475;
+    public static final float INITIAL_MAP_LONGITUDE = (float) -3.7038104608654976;
+    public static final int INITIAL_MAP_ZOOM = 12;
+
+    public static final int DEFAULT_SHOP_LOGO_ID = android.R.drawable.ic_menu_camera;
 }

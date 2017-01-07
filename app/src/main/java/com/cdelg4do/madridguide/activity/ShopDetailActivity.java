@@ -13,6 +13,7 @@ import com.squareup.picasso.Picasso;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.cdelg4do.madridguide.util.Constants.DEFAULT_SHOP_LOGO_ID;
 import static com.cdelg4do.madridguide.util.Constants.INTENT_KEY_DETAIL_SHOP;
 
 /**
@@ -46,6 +47,7 @@ public class ShopDetailActivity extends AppCompatActivity {
             nameText.setText( shop.getName() );
             Picasso.with(this).
                     load( shop.getLogoImgUrl() ).
+                    placeholder(DEFAULT_SHOP_LOGO_ID).
                     into(logoImage);
         }
     }

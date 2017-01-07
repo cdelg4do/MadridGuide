@@ -2,6 +2,7 @@ package com.cdelg4do.madridguide.fragment;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -37,7 +38,11 @@ public class ShopListFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_shop_list, container, false);
 
         recyclerView = (RecyclerView) rootView.findViewById(R.id.shops_recycler_view);
-        recyclerView.setLayoutManager( new LinearLayoutManager(getActivity()) );
+        LinearLayoutManager layoutMgr = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layoutMgr);
+
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), layoutMgr.getOrientation());
+        recyclerView.addItemDecoration(dividerItemDecoration);
 
         return rootView;
     }
