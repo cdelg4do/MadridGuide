@@ -1,3 +1,4 @@
 <resources>
     <string name="shops_url">http://madrid-shops.com/json/getShops.php</string>
+    <!-- <string name="shops_url">http://demo3359514.mockable.io/shops.json</string> -->
 </resources>

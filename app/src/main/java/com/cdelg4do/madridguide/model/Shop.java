@@ -15,6 +15,12 @@ import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_LOGO_IMAG
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_LONGITUDE;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_NAME;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_URL;
+import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_HEIGHT;
+import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_MARKER_COLOR;
+import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_SCALE;
+import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_TYPE;
+import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_WIDTH;
+import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_ZOOM;
 
 
 /**
@@ -79,6 +85,20 @@ public class Shop implements Serializable {
 
     public float getLongitude() {
         return longitude;
+    }
+
+    public String getMapUrl() {
+
+        String mapUrl = "http://maps.googleapis.com/maps/api/staticmap" +
+                "?center="+ latitude +","+ longitude +
+                "&zoom="+ DETAIL_MAP_ZOOM +
+                "&size="+ DETAIL_MAP_WIDTH +"x"+ DETAIL_MAP_HEIGHT +
+                "&scale="+ DETAIL_MAP_SCALE +
+                "&maptype="+ DETAIL_MAP_TYPE +
+                "&markers=%7Ccolor:"+ DETAIL_MAP_MARKER_COLOR +"%7C"+ latitude +","+ longitude
+                ;
+
+        return mapUrl;
     }
 
 

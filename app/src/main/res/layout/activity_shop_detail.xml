@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_shop_detail"
@@ -9,20 +9,70 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.cdelg4do.madridguide.activity.ShopDetailActivity">
-    
-    <ImageView
-        android:id="@+id/activity_shop_detail_logo_image"
-        tools:src="@android:drawable/ic_menu_camera"
-        android:layout_width="80dp"
-        android:layout_height="80dp"/>
 
-    <TextView
-        android:id="@+id/activity_shop_detail_shop_name_text"
-        android:textSize="20sp"
-        android:gravity="center"
-        tools:text="This is the Shop Name"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/row_shop_height"
+                    tools:background="@android:color/white">
+
+        <ImageView
+            android:id="@+id/activity_shop_detail_shop_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:background="@android:color/white"
+            android:alpha="0.80"
+            android:scaleType="centerCrop"
+            tools:src="@drawable/default_placeholder"/>
+
+        <FrameLayout
+            android:id="@+id/row_shop_horizontal_band"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/row_shop_name_height"
+            android:layout_centerVertical="true"
+            android:background="@android:color/white"
+            android:alpha="0.80"/>
+
+        <ImageView
+            android:id="@+id/activity_shop_detail_logo_image"
+            android:layout_width="@dimen/row_shop_logo_width"
+            android:layout_height="@dimen/row_shop_logo_height"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/row_shop_logo_margin_left"
+            android:background="@android:color/white"
+            tools:src="@drawable/default_placeholder"/>
+
+        <TextView
+            android:id="@+id/activity_shop_detail_shop_name_text"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/row_shop_name_height"
+            android:layout_toEndOf="@+id/activity_shop_detail_logo_image"
+            android:layout_toRightOf="@+id/activity_shop_detail_logo_image"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/row_shop_name_padding"
+            android:textColor="@android:color/black"
+            android:textStyle="normal|bold"
+            android:textSize="18sp"
+            android:gravity="center_vertical|center_horizontal"
+            tools:text="Ejemplo de nombre de tienda un poco largo"/>
+
+    </RelativeLayout>
+
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"/>
+        android:layout_height="wrap_content">
 
-</RelativeLayout>
+        <ImageView
+            android:id="@+id/activity_shop_detail_map_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            tools:src="@drawable/default_placeholder"
+            android:layout_margin="10dp"/>
+
+    </FrameLayout>
+
+</LinearLayout>

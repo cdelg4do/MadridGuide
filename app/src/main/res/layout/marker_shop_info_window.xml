@@ -16,7 +16,7 @@
             android:layout_height="@dimen/marker_shop_height"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/marker_shop_margin"
-            tools:src="@android:drawable/ic_menu_camera"/>
+            tools:src="@drawable/default_placeholder"/>
 
         <TextView
             android:id="@+id/marker_shop_name"

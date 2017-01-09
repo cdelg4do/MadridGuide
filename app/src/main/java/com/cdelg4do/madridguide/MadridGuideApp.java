@@ -3,8 +3,6 @@ package com.cdelg4do.madridguide;
 import android.app.Application;
 import android.content.Context;
 
-import com.squareup.picasso.Picasso;
-
 import java.lang.ref.WeakReference;
 
 
@@ -26,8 +24,8 @@ public class MadridGuideApp extends Application {
         appContext = new WeakReference<Context>( getApplicationContext() );
 
         // Settings for Picasso
-        Picasso.with(appContext.get()).setLoggingEnabled(true);
-        Picasso.with(appContext.get()).setIndicatorsEnabled(true);
+        //Picasso.with(appContext.get()).setLoggingEnabled(true);
+        //Picasso.with(appContext.get()).setIndicatorsEnabled(true);
     }
 
     // Override to warn about memory warnings

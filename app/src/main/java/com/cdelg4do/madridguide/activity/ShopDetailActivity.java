@@ -7,13 +7,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cdelg4do.madridguide.R;
+import com.cdelg4do.madridguide.manager.image.ImageCacheManager;
 import com.cdelg4do.madridguide.model.Shop;
-import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.cdelg4do.madridguide.util.Constants.DEFAULT_SHOP_IMAGE_ID;
 import static com.cdelg4do.madridguide.util.Constants.DEFAULT_SHOP_LOGO_ID;
+import static com.cdelg4do.madridguide.util.Constants.ERROR_SHOP_IMAGE_ID;
+import static com.cdelg4do.madridguide.util.Constants.ERROR_SHOP_LOGO_ID;
 import static com.cdelg4do.madridguide.util.Constants.INTENT_KEY_DETAIL_SHOP;
 
 /**
@@ -23,11 +26,13 @@ public class ShopDetailActivity extends AppCompatActivity {
 
     private Shop shop;
 
-    @BindView(R.id.activity_shop_detail_logo_image)
-    ImageView logoImage;
+    @BindView(R.id.activity_shop_detail_logo_image) ImageView logoImage;
 
-    @BindView(R.id.activity_shop_detail_shop_name_text)
-    TextView nameText;
+    @BindView(R.id.activity_shop_detail_shop_image) ImageView shopImage;
+
+    @BindView(R.id.activity_shop_detail_map_image) ImageView mapImage;
+
+    @BindView(R.id.activity_shop_detail_shop_name_text) TextView nameText;
 
 
     @Override
@@ -45,10 +50,24 @@ public class ShopDetailActivity extends AppCompatActivity {
         if (shop != null) {
 
             nameText.setText( shop.getName() );
-            Picasso.with(this).
-                    load( shop.getLogoImgUrl() ).
-                    placeholder(DEFAULT_SHOP_LOGO_ID).
-                    into(logoImage);
+
+            ImageCacheManager.getInstance(this).loadCachedImage(
+                    logoImage,
+                    shop.getLogoImgUrl(),
+                    DEFAULT_SHOP_LOGO_ID,
+                    ERROR_SHOP_LOGO_ID);
+
+            ImageCacheManager.getInstance(this).loadCachedImage(
+                    shopImage,
+                    shop.getImageUrl(),
+                    DEFAULT_SHOP_IMAGE_ID,
+                    ERROR_SHOP_IMAGE_ID);
+
+            ImageCacheManager.getInstance(this).loadCachedImage(
+                    mapImage,
+                    shop.getMapUrl(),
+                    DEFAULT_SHOP_LOGO_ID,
+                    ERROR_SHOP_LOGO_ID);
         }
     }
 }

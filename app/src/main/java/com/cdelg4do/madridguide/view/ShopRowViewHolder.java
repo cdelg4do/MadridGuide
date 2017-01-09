@@ -8,12 +8,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cdelg4do.madridguide.R;
+import com.cdelg4do.madridguide.manager.image.ImageCacheManager;
 import com.cdelg4do.madridguide.model.Shop;
-import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
 
+import static com.cdelg4do.madridguide.util.Constants.DEFAULT_SHOP_IMAGE_ID;
 import static com.cdelg4do.madridguide.util.Constants.DEFAULT_SHOP_LOGO_ID;
+import static com.cdelg4do.madridguide.util.Constants.ERROR_SHOP_IMAGE_ID;
+import static com.cdelg4do.madridguide.util.Constants.ERROR_SHOP_LOGO_ID;
 
 /**
  * This class represents the ViewHolder to present a Shop in a RecyclerView.
@@ -43,16 +46,19 @@ public class ShopRowViewHolder extends RecyclerView.ViewHolder {
 
         nameTextView.setText( shop.getName() );
 
-        Picasso.with(context.get())
-                .load( shop.getLogoImgUrl() )
-                .placeholder(DEFAULT_SHOP_LOGO_ID)
-                //.memoryPolicy(MemoryPolicy.NO_CACHE)
-                //.networkPolicy(NetworkPolicy.NO_CACHE)
-                .into(logoImageView);
+        ImageCacheManager imageMngr = ImageCacheManager.getInstance(context.get());
 
-        Picasso.with(context.get())
-                .load( shop.getImageUrl() )
-                .into(backgroundImageView);
+        imageMngr.loadCachedImage(
+                logoImageView,
+                shop.getLogoImgUrl(),
+                DEFAULT_SHOP_LOGO_ID,
+                ERROR_SHOP_LOGO_ID);
+
+        imageMngr.loadCachedImage(
+                backgroundImageView,
+                shop.getImageUrl(),
+                DEFAULT_SHOP_IMAGE_ID,
+                ERROR_SHOP_IMAGE_ID);
     }
 
 }

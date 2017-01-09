@@ -16,12 +16,12 @@ import java.util.List;
  *
  * - First (in background): downloads the shop list from the remote server and builds a new Shops object with them.
  *
- * - Second (in the main thread): pass the Shops object to the received GetAllShopsInteractorListener.
+ * - Second (in the main thread): pass the Shops object to the received DownloadAllShopsInteractorListener.
  */
 public class DownloadAllShopsInteractor {
 
     // This interface describes the behavior of a listener waiting for the completion of the async operation
-    public interface GetAllShopsInteractorListener {
+    public interface DownloadAllShopsInteractorListener {
 
         void onGetAllShopsFinished(Shops shops);
         void onGetAllShopsFailed(Exception e);
@@ -33,7 +33,7 @@ public class DownloadAllShopsInteractor {
      * @param context   context for the operation.
      * @param listener  listener that will process the result of the operation.
      */
-    public void execute(final Context context, final GetAllShopsInteractorListener listener) {
+    public void execute(final Context context, final DownloadAllShopsInteractorListener listener) {
 
         if (listener == null)
             return;

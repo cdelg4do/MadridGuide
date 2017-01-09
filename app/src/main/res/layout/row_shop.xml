@@ -14,7 +14,7 @@
         android:background="@android:color/white"
         android:alpha="0.80"
         android:scaleType="centerCrop"
-        tools:src="@android:drawable/ic_menu_camera"/>
+        tools:src="@drawable/default_placeholder"/>
 
     <FrameLayout
         android:id="@+id/row_shop_horizontal_band"
@@ -31,7 +31,7 @@
         android:layout_centerVertical="true"
         android:layout_margin="@dimen/row_shop_logo_margin_left"
         android:background="@android:color/white"
-        tools:src="@android:drawable/ic_menu_camera"/>
+        tools:src="@drawable/default_placeholder"/>
 
     <TextView
         android:id="@+id/row_shop_name"

@@ -7,12 +7,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cdelg4do.madridguide.R;
+import com.cdelg4do.madridguide.manager.image.ImageCacheManager;
 import com.cdelg4do.madridguide.model.Shop;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.Marker;
-import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Callback;
 
-import static com.cdelg4do.madridguide.util.Constants.DEFAULT_SHOP_LOGO_ID;
+import static com.cdelg4do.madridguide.util.Constants.ERROR_SHOP_LOGO_ID;
 
 
 /**
@@ -21,14 +22,15 @@ import static com.cdelg4do.madridguide.util.Constants.DEFAULT_SHOP_LOGO_ID;
 public class ShopInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     private final Context context;
-    private final View myContentsView;
+    private final View infoWindowContents;
+
 
     public ShopInfoWindowAdapter(Context context){
 
         this.context = context;
 
         LayoutInflater inflater = (LayoutInflater) context.getSystemService( Context.LAYOUT_INFLATER_SERVICE );
-        myContentsView = inflater.inflate(R.layout.marker_shop_info_window, null);
+        infoWindowContents = inflater.inflate(R.layout.marker_shop_info_window, null);
     }
 
 
@@ -48,26 +50,45 @@ public class ShopInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
         Shop shop = (Shop) marker.getTag();
 
-        final ImageView markerShopLogo = (ImageView) myContentsView.findViewById(R.id.marker_shop_logo);
-        final TextView markerShopName = (TextView) myContentsView.findViewById(R.id.marker_shop_name);
+        final ImageView markerShopLogo = (ImageView) infoWindowContents.findViewById(R.id.marker_shop_logo);
+        final TextView markerShopName = (TextView) infoWindowContents.findViewById(R.id.marker_shop_name);
 
         markerShopName.setText( shop.getName() );
 
-        Picasso.with(context).
-                load(shop.getLogoImgUrl()).
-                placeholder(DEFAULT_SHOP_LOGO_ID).
-                into(markerShopLogo);
+        // The callback is necessary to re-show the info window once the image loads successfully
+        // (because the Info Window is not a live view, it is rendered as an image)
+        ImageCacheManager.getInstance(context).loadCachedImage(
+                markerShopLogo,
+                shop.getLogoImgUrl(),
+                ERROR_SHOP_LOGO_ID,     // the error resource id is ignored in the info windows,
+                ERROR_SHOP_LOGO_ID,     // if the image load fails, the placeholder will remain
+                new Callback() {
 
-        // Note:
-        //
-        // The image will appear only if it loads into the ImageView immediately (i.e. if the image
-        // is already cached). If the image is not cached, it will not be visible
-        // because the Info Window will appear BEFORE the image is downloaded.
-        //
-        // This is because the Info Window is not a live view (it is rendered as an image), so
-        // any subsequent changes to it will not be reflected.
+                    @Override
+                    public void onSuccess() {
+                        refreshInfoWindow(marker);
+                    }
 
-        return myContentsView;
+                    // refreshInfoWindow(marker) SHOULD NOT be called in case of error
+                    // (as it calls again getInfoContents() into an infinite loop)
+                    @Override
+                    public void onError() {
+                        // Do nothing
+                    }
+                });
+
+        return infoWindowContents;
+    }
+
+
+    // Auxiliary methods:
+
+    private void refreshInfoWindow(Marker marker) {
+
+        if ( marker.isInfoWindowShown() ) {
+            marker.hideInfoWindow();
+            marker.showInfoWindow();
+        }
     }
 
 }

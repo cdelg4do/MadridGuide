@@ -27,8 +27,8 @@ import com.cdelg4do.madridguide.view.OnElementClickedListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -51,7 +51,7 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final int REQUEST_CODE_ASK_LOCATION_PERMISSION = 123;
     private static final int SHOPS_LOADER_ID = 0;
 
-    private MapFragment mapFragment;
+    private SupportMapFragment mapFragment;
     private ShopListFragment shopListFragment;
     private GoogleMap map;
 
@@ -62,7 +62,8 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_shops);
 
         // Get the map fragment (note: a MapFragment is a native Fragment, NOT a support fragment)
-        mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.activity_shops_fragment_map);
+
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_shops_fragment_map);
 
         // Get a reference to the map (is an async call, so configure the map only after it is received)
         mapFragment.getMapAsync(new OnMapReadyCallback() {
