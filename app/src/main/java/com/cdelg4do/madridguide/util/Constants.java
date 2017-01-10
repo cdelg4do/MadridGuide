@@ -1,5 +1,6 @@
 package com.cdelg4do.madridguide.util;
 
+import com.cdelg4do.madridguide.MadridGuideApp;
 import com.cdelg4do.madridguide.R;
 
 /**
@@ -7,6 +8,12 @@ import com.cdelg4do.madridguide.R;
  */
 public class Constants {
     public static final String appName = "com.cdelg4do.madridguide";
+
+    public static final String GOOGLE_MAPS_API_KEY = MadridGuideApp.getAppContext().getString(R.string.google_maps_api_key);
+
+    public static final String LANG_ENGLISH = "en";
+    public static final String LANG_SPANISH = "es";
+    public static final String LANG_DEFAULT = LANG_ENGLISH;
 
     public static final String INTENT_KEY_DETAIL_SHOP = appName + ".INTENT_KEY_DETAIL_SHOP";
 
