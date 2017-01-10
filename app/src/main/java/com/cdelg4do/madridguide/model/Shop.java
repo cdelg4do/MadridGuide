@@ -4,23 +4,34 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.support.annotation.NonNull;
 
+import com.cdelg4do.madridguide.util.Utils;
+
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_ADDRESS;
-import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_DESCRIPTION;
+import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_DESCRIPTION_EN;
+import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_DESCRIPTION_ES;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_ID;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_IMAGE_URL;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_LATITUDE;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_LOGO_IMAGE_URL;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_LONGITUDE;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_NAME;
+import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_OPENING_HOURS_EN;
+import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_OPENING_HOURS_ES;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_URL;
+import static com.cdelg4do.madridguide.util.Constants.GOOGLE_MAPS_API_KEY;
+import static com.cdelg4do.madridguide.util.Constants.LANG_DEFAULT;
 import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_HEIGHT;
 import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_MARKER_COLOR;
 import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_SCALE;
 import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_TYPE;
 import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_WIDTH;
 import static com.cdelg4do.madridguide.util.Constants.DETAIL_MAP_ZOOM;
+import static com.cdelg4do.madridguide.util.Constants.LANG_ENGLISH;
+import static com.cdelg4do.madridguide.util.Constants.LANG_SPANISH;
 
 
 /**
@@ -35,7 +46,8 @@ public class Shop implements Serializable {
     private String logoImgUrl;
     private String address;
     private String url;
-    private String description;
+    private Map<String,String> descriptions;
+    private Map<String,String> openingHours;
     private float latitude;
     private float longitude;
 
@@ -46,6 +58,9 @@ public class Shop implements Serializable {
     public Shop(long id, String name) {
         this.id = id;
         this.name = name;
+
+        this.descriptions = new HashMap<>();
+        this.openingHours = new HashMap<>();
     }
 
 
@@ -75,8 +90,32 @@ public class Shop implements Serializable {
         return url;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescription(String language) {
+        return descriptions.get(language);
+    }
+
+    public String getLocalizedDescription() {
+
+        String desc = descriptions.get(Utils.systemLanguage());
+
+        if (desc == null)
+            desc = descriptions.get(LANG_DEFAULT);
+
+        return desc;
+    }
+
+    public String getOpeningHours(String language) {
+        return openingHours.get(language);
+    }
+
+    public String getLocalizedOpeningHours() {
+
+        String hours = openingHours.get(Utils.systemLanguage());
+
+        if (hours == null)
+            hours = openingHours.get(LANG_DEFAULT);
+
+        return hours;
     }
 
     public float getLatitude() {
@@ -89,13 +128,14 @@ public class Shop implements Serializable {
 
     public String getMapUrl() {
 
-        String mapUrl = "http://maps.googleapis.com/maps/api/staticmap" +
-                "?center="+ latitude +","+ longitude +
-                "&zoom="+ DETAIL_MAP_ZOOM +
-                "&size="+ DETAIL_MAP_WIDTH +"x"+ DETAIL_MAP_HEIGHT +
-                "&scale="+ DETAIL_MAP_SCALE +
-                "&maptype="+ DETAIL_MAP_TYPE +
-                "&markers=%7Ccolor:"+ DETAIL_MAP_MARKER_COLOR +"%7C"+ latitude +","+ longitude
+        String mapUrl = "http://maps.googleapis.com/maps/api/staticmap"
+                + "?center="+ latitude +","+ longitude
+                + "&zoom="+ DETAIL_MAP_ZOOM
+                + "&size="+ DETAIL_MAP_WIDTH +"x"+ DETAIL_MAP_HEIGHT
+                + "&scale="+ DETAIL_MAP_SCALE
+                + "&maptype="+ DETAIL_MAP_TYPE
+                + "&markers=%7Ccolor:"+ DETAIL_MAP_MARKER_COLOR +"%7C"+ latitude +","+ longitude
+                + "&key="+ GOOGLE_MAPS_API_KEY
                 ;
 
         return mapUrl;
@@ -134,8 +174,13 @@ public class Shop implements Serializable {
         return this;
     }
 
-    public Shop setDescription(String description) {
-        this.description = description;
+    public Shop setDescription(String language, String description) {
+        this.descriptions.put(language,description);
+        return this;
+    }
+
+    public Shop setOpeningHours(String language, String hours) {
+        this.openingHours.put(language,hours);
         return this;
     }
 
@@ -164,7 +209,10 @@ public class Shop implements Serializable {
 
         cv.put(KEY_SHOP_NAME, this.getName());
         cv.put(KEY_SHOP_ADDRESS, this.getAddress());
-        cv.put(KEY_SHOP_DESCRIPTION, this.getDescription());
+        cv.put(KEY_SHOP_DESCRIPTION_EN, this.getDescription(LANG_ENGLISH));
+        cv.put(KEY_SHOP_DESCRIPTION_ES, this.getDescription(LANG_SPANISH));
+        cv.put(KEY_SHOP_OPENING_HOURS_EN, this.getOpeningHours(LANG_ENGLISH));
+        cv.put(KEY_SHOP_OPENING_HOURS_ES, this.getOpeningHours(LANG_SPANISH));
         cv.put(KEY_SHOP_IMAGE_URL, this.getImageUrl());
         cv.put(KEY_SHOP_LOGO_IMAGE_URL, this.getLogoImgUrl());
         cv.put(KEY_SHOP_LATITUDE, this.getLatitude());
@@ -191,7 +239,10 @@ public class Shop implements Serializable {
 
         shop.setName(cv.getAsString(KEY_SHOP_NAME));
         shop.setAddress(cv.getAsString(KEY_SHOP_ADDRESS));
-        shop.setDescription(cv.getAsString(KEY_SHOP_DESCRIPTION));
+        shop.setDescription(LANG_ENGLISH,cv.getAsString(KEY_SHOP_DESCRIPTION_EN));
+        shop.setDescription(LANG_SPANISH,cv.getAsString(KEY_SHOP_DESCRIPTION_ES));
+        shop.setDescription(LANG_ENGLISH,cv.getAsString(KEY_SHOP_OPENING_HOURS_EN));
+        shop.setDescription(LANG_SPANISH,cv.getAsString(KEY_SHOP_OPENING_HOURS_ES));
         shop.setImageUrl(cv.getAsString(KEY_SHOP_IMAGE_URL));
         shop.setLogoImgUrl(cv.getAsString(KEY_SHOP_LOGO_IMAGE_URL));
         shop.setLatitude(cv.getAsFloat(KEY_SHOP_LATITUDE));
@@ -213,7 +264,10 @@ public class Shop implements Serializable {
         String logoImageUrl = c.getString( c.getColumnIndex(KEY_SHOP_LOGO_IMAGE_URL) );
         String address = c.getString( c.getColumnIndex(KEY_SHOP_ADDRESS) );
         String url = c.getString( c.getColumnIndex(KEY_SHOP_URL) );
-        String description = c.getString( c.getColumnIndex(KEY_SHOP_DESCRIPTION) );
+        String description_en = c.getString( c.getColumnIndex(KEY_SHOP_DESCRIPTION_EN) );
+        String description_es = c.getString( c.getColumnIndex(KEY_SHOP_DESCRIPTION_ES) );
+        String openingHours_en = c.getString( c.getColumnIndex(KEY_SHOP_OPENING_HOURS_EN) );
+        String openingHours_es = c.getString( c.getColumnIndex(KEY_SHOP_OPENING_HOURS_ES) );
         float latitude = c.getFloat( c.getColumnIndex(KEY_SHOP_LATITUDE) );
         float longitude = c.getFloat( c.getColumnIndex(KEY_SHOP_LONGITUDE) );
 
@@ -224,7 +278,10 @@ public class Shop implements Serializable {
                 .setLogoImgUrl(logoImageUrl)
                 .setAddress(address)
                 .setUrl(url)
-                .setDescription(description)
+                .setDescription(LANG_ENGLISH, description_en)
+                .setDescription(LANG_SPANISH, description_es)
+                .setOpeningHours(LANG_ENGLISH, openingHours_en)
+                .setOpeningHours(LANG_SPANISH, openingHours_es)
                 .setLatitude(latitude)
                 .setLongitude(longitude);
 

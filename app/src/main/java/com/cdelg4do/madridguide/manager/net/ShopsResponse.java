@@ -23,7 +23,10 @@ public class ShopsResponse {
         @SerializedName("logo_img")         private String logoImgUrl;
         @SerializedName("address")          private String address;
         @SerializedName("url")              private String url;
-        @SerializedName("description_es")   private String description;
+        @SerializedName("description_en")   private String description_en;
+        @SerializedName("description_es")   private String description_es;
+        @SerializedName("opening_hours_en") private String openingHours_en;
+        @SerializedName("opening_hours_es") private String openingHours_es;
         @SerializedName("gps_lat")          private float latitude;
         @SerializedName("gps_lon")          private float longitude;
 
@@ -47,8 +50,20 @@ public class ShopsResponse {
             return url;
         }
 
-        public String getDescription() {
-            return description;
+        public String getDescriptionEn() {
+            return description_en;
+        }
+
+        public String getDescriptionEs() {
+            return description_es;
+        }
+
+        public String getOpeningHoursEn() {
+            return openingHours_en;
+        }
+
+        public String getOpeningHoursEs() {
+            return openingHours_es;
         }
 
         public float getLatitude() {

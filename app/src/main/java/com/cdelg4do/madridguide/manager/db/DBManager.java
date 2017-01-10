@@ -49,6 +49,7 @@ public class DBManager extends SQLiteOpenHelper {
     // (the db creation is lazy: does not happen in the constructor, but when accessed for the 1st time)
     @Override
     public void onCreate(SQLiteDatabase db) {
+        Log.d("DBManager","Creating Database...");
         createDB(db);
     }
 

@@ -1,15 +1,17 @@
 package com.cdelg4do.madridguide.util;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.support.design.widget.Snackbar;
-import android.app.AlertDialog;
 import android.view.View;
 import android.widget.Toast;
 
 import com.cdelg4do.madridguide.R;
+
+import java.util.Locale;
 
 import static com.cdelg4do.madridguide.util.Utils.MessageType.DIALOG;
 import static com.cdelg4do.madridguide.util.Utils.MessageType.NONE;
@@ -78,5 +80,11 @@ public abstract class Utils {
         pDialog.setCancelable(false);
 
         return pDialog;
+    }
+
+
+    public static String systemLanguage()
+    {
+        return Locale.getDefault().getLanguage();   // "en", "es", etc...
     }
 }

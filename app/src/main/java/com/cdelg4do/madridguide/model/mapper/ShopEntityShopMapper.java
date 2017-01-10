@@ -7,6 +7,9 @@ import com.cdelg4do.madridguide.model.Shop;
 import java.util.LinkedList;
 import java.util.List;
 
+import static com.cdelg4do.madridguide.util.Constants.LANG_ENGLISH;
+import static com.cdelg4do.madridguide.util.Constants.LANG_SPANISH;
+
 
 /**
  * This class is used to map a list of ShopEntity JSON objects to a list of Shop model objects.
@@ -25,7 +28,10 @@ public class ShopEntityShopMapper {
             shop.setLogoImgUrl( entity.getLogoImgUrl() );
             shop.setAddress( entity.getAddress() );
             shop.setUrl( entity.getUrl() );
-            shop.setDescription( entity.getDescription() );
+            shop.setDescription(LANG_ENGLISH, entity.getDescriptionEn() );
+            shop.setDescription(LANG_SPANISH, entity.getDescriptionEs() );
+            shop.setOpeningHours(LANG_ENGLISH, entity.getOpeningHoursEn() );
+            shop.setOpeningHours(LANG_SPANISH, entity.getOpeningHoursEs() );
             shop.setLatitude( entity.getLatitude() );
             shop.setLongitude( entity.getLongitude() );
 

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.LruCache;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -31,7 +32,7 @@ public class ImageCacheManager {
     }
 
     private WeakReference<Context> context;
-//    private LruCache picassoCache;
+    private LruCache picassoCache;
 
 
     // The constructor is private, call getInstance to get a reference to the singleton
@@ -42,14 +43,15 @@ public class ImageCacheManager {
         // Modify the default Picasso instance
         // This allows to keep a reference to cache used by Picasso
         // (the default cache object is not visible outside Picasso's package)
-/*        picassoCache = new LruCache(context);
+        picassoCache = new LruCache(context);
         Picasso.Builder builder = new Picasso.Builder(context);
         builder.memoryCache(picassoCache);
-        Picasso.setSingletonInstance(builder.build());  // future calls to Picasso
-                                                        // will use our custom instance
-*/
+
+        // Future calls to Picasso will use our custom instance
+        Picasso.setSingletonInstance(builder.build());
+
         // Picasso logging options
-        //Picasso.with(context).setLoggingEnabled(true);
+        Picasso.with(context).setLoggingEnabled(true);
         Picasso.with(context).setIndicatorsEnabled(true);
     }
 
@@ -72,7 +74,7 @@ public class ImageCacheManager {
      */
     public void clearCache() {
 
-//        picassoCache.clear();
+        picassoCache.clear();
 
         File cacheDir = new File(context.get().getCacheDir(), CACHE_DIR_NAME);
         if (cacheDir.exists() && cacheDir.isDirectory())
@@ -103,7 +105,7 @@ public class ImageCacheManager {
 
         Picasso.with(context.get())
                 .load(imageUrl)
-                .memoryPolicy(MemoryPolicy.NO_CACHE, MemoryPolicy.NO_STORE)     // Do not use the memory cache here
+                .memoryPolicy(MemoryPolicy.NO_CACHE)     // Do not use the memory cache here
                 .networkPolicy(NetworkPolicy.NO_CACHE)   // Do not look for the image in the disk cache
                 .fetch(new Callback() {
 

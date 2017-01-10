@@ -53,4 +53,7 @@ dependencies {
 
     // Google Maps
     compile 'com.google.android.gms:play-services-maps:10.0.0'
+
+    // PhotoView (for zoom gesture on static map images)
+    compile 'com.github.chrisbanes.photoview:library:1.2.4'
 }
