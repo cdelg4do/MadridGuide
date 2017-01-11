@@ -234,29 +234,6 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    /*
-    // Load the shops directly from the cache (database) by using an interactor,
-    // then add the shop markers to the map.
-    private void addShopMarkers() {
-
-        new GetAllShopsFromLocalCacheInteractor().execute(this,
-                new GetAllShopsFromLocalCacheInteractor.GetAllShopsFromLocalCacheInteractorListener() {
-
-                    @Override
-                    public void onGetAllShopsFromLocalCacheFinished(Shops shops) {
-
-                        List<Shop> shopList = shops.allShops();
-
-                        for (int i=0; i<shopList.size(); i++)
-                            addShopMarker( shopList.get(i) );
-                    }
-                }
-        );
-
-    }
-    */
-
-
     // Add markers to the map, corresponding to a given Shops object
     private void addShopMarkers(@NonNull Shops shops) {
 

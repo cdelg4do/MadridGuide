@@ -23,7 +23,7 @@ public class CacheAllShopsInteractor {
     // This interface describes the behavior of a listener waiting for the completion of the async operation
     public interface CacheAllShopsInteractorListener {
 
-        void onCacheAllShopsFinished(boolean success);
+        void onCacheAllShopsCompletion(boolean success);
     }
 
     /**
@@ -60,7 +60,7 @@ public class CacheAllShopsInteractor {
                     MainThread.run(new Runnable() {
                         @Override
                         public void run() {
-                            listener.onCacheAllShopsFinished(true);
+                            listener.onCacheAllShopsCompletion(true);
                         }
                     });
                 }
@@ -68,7 +68,7 @@ public class CacheAllShopsInteractor {
                     MainThread.run(new Runnable() {
                         @Override
                         public void run() {
-                            listener.onCacheAllShopsFinished(false);
+                            listener.onCacheAllShopsCompletion(false);
                         }
                     });
                 }

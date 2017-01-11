@@ -35,7 +35,7 @@ public class CacheAllImagesInteractor {
     // This interface describes the behavior of a listener waiting for the completion of the operation
     public interface CacheAllImagesInteractorListener {
 
-        void onCacheAllImagesFinished(int errors);
+        void onCacheAllImagesCompletion(int errors);
     }
 
     /**
@@ -90,15 +90,15 @@ public class CacheAllImagesInteractor {
                     entry.setValue(SUCCESS);
 
                     if ( noMorePendingDownloads(urlMap) )
-                        listener.onCacheAllImagesFinished( errorCount(urlMap) );
+                        listener.onCacheAllImagesCompletion( errorCount(urlMap) );
                 }
 
                 @Override
                 public void onImageCachingError() {
                     entry.setValue(ERROR);
 
-                    if (noMorePendingDownloads(urlMap))
-                        listener.onCacheAllImagesFinished( errorCount(urlMap) );
+                    if ( noMorePendingDownloads(urlMap) )
+                        listener.onCacheAllImagesCompletion( errorCount(urlMap) );
                 }
             });
         }

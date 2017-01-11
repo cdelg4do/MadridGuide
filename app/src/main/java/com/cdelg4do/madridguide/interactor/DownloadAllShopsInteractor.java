@@ -23,8 +23,8 @@ public class DownloadAllShopsInteractor {
     // This interface describes the behavior of a listener waiting for the completion of the async operation
     public interface DownloadAllShopsInteractorListener {
 
-        void onGetAllShopsFinished(Shops shops);
-        void onGetAllShopsFailed(Exception e);
+        void onGetAllShopsSuccess(Shops shops);
+        void onGetAllShopsFail(Exception e);
     }
 
     /**
@@ -42,15 +42,15 @@ public class DownloadAllShopsInteractor {
         networkMgr.getShopsFromServer(new NetworkManager.NetworkShopsRequestListener() {
 
             @Override
-            public void onNetworkShopsRequestFinished(List<ShopsResponse.ShopEntity> shopEntities) {
+            public void onNetworkShopsRequestSuccess(List<ShopsResponse.ShopEntity> shopEntities) {
 
                 List<Shop> shopList = new ShopEntityShopMapper().map(shopEntities);
-                listener.onGetAllShopsFinished( Shops.buildShopsFromList(shopList) );
+                listener.onGetAllShopsSuccess( Shops.buildShopsFromList(shopList) );
             }
 
             @Override
-            public void onNetworkShopsRequestError(Exception e) {
-                listener.onGetAllShopsFailed(e);
+            public void onNetworkShopsRequestFail(Exception e) {
+                listener.onGetAllShopsFail(e);
             }
         });
     }

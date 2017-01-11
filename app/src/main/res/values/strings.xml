@@ -1,12 +1,17 @@
 <resources>
     <string name="app_name">MadridGuide</string>
     <string name="error">ERROR</string>
+    <string name="warning">WARNING</string>
     <string name="activity_main_btn_shops_txt">Shops</string>
     <string name="defaultProgressTitle">Please wait</string>
-    <string name="deleteLocalCache_progressMsg">Cleaning local cache...</string>
+    <string name="refreshDialog_noInternetTitle">No Internet connection</string>
+    <string name="refreshDialog_noInternetMsg">MadridGuide needs to connect to the Internet in order to download up-to-date information. Please check your Internet connection and try again.</string>
+    <string name="refreshDialog_noWifiTitle">No Wi-Fi connection</string>
+    <string name="refreshDialog_noWifiMsg">"MadridGuide is about to download up-to-date information from the Internet (mobile data charges may apply).\n\nDo you want to proceed?"</string>
+    <string name="discardLocalData_progressMsg">Discarding previous local data...</string>
     <string name="downloadShops_progressMsg">Downloading shops from server...</string>
     <string name="downloadShops_errorMsg">Unable to download the shops data, please check your internet connection and try again.</string>
     <string name="downloadShopImages_progressMsg">Downloading shop images...</string>
-    <string name="downloadShopImages_errorMsg">"Some shop images could not be cached properly. Error count: "</string>
+    <string name="downloadShopImages_warningMsg">"Some shop images could not be cached properly. Error count: "</string>
     <string name="cacheShops_errorMsg">Unable to store the shops data into the local cache, please try again.</string>
 </resources>

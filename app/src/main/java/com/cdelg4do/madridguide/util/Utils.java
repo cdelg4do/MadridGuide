@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.Toast;
@@ -68,6 +69,33 @@ public abstract class Utils {
 
             dialog.show();
         }
+    }
+
+
+    public static void showCancelAcceptDialog(Context ctx, String title, String msg, OnClickListener cancelListener, OnClickListener acceptListener) {
+
+        if (acceptListener == null)
+            acceptListener = new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            };
+
+        if (cancelListener == null)
+            cancelListener = new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton(ctx.getResources().getString(android.R.string.ok), acceptListener);
+        builder.setNegativeButton(ctx.getResources().getString(android.R.string.cancel), cancelListener);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 

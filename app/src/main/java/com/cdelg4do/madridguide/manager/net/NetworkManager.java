@@ -1,6 +1,8 @@
 package com.cdelg4do.madridguide.manager.net;
 
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 
 import com.android.volley.RequestQueue;
@@ -17,18 +19,28 @@ import java.io.StringReader;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import static android.content.Context.CONNECTIVITY_SERVICE;
+
 
 /**
  * This class manages the network data download.
  */
 public class NetworkManager {
 
-    public interface NetworkShopsRequestListener {
-        void onNetworkShopsRequestFinished(List<ShopsResponse.ShopEntity> shopEntities);
-        void onNetworkShopsRequestError(Exception e);
+    public static enum ConnectionType {
+
+        NONE,
+        WIFI,
+        OTHER   // mobile, wimax, vpn, etc
     }
 
-    WeakReference<Context> context;
+    public interface NetworkShopsRequestListener {
+        void onNetworkShopsRequestSuccess(List<ShopsResponse.ShopEntity> shopEntities);
+        void onNetworkShopsRequestFail(Exception e);
+    }
+
+    private WeakReference<Context> context;
+    private ConnectivityManager connectivityMgr;
 
 
     public NetworkManager(Context context) {
@@ -54,19 +66,38 @@ public class NetworkManager {
                     @Override
                     public void onResponse(String response) {
                         List<ShopsResponse.ShopEntity> shopEntities = parseShopsRequestResponse(response);
-                        listener.onNetworkShopsRequestFinished(shopEntities);
+                        listener.onNetworkShopsRequestSuccess(shopEntities);
                     }
                 },
 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.onNetworkShopsRequestError(error);
+                        listener.onNetworkShopsRequestFail(error);
                     }
                 }
         );
 
         queue.add(shopsRequest);
+    }
+
+
+    // Determines what kind of internet connection the device has (if any)
+    public static ConnectionType getInternetConnectionType(Context context)
+    {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = cm.getActiveNetworkInfo();
+
+        if (activeNetworkInfo.isConnectedOrConnecting()) {
+
+            if (activeNetworkInfo.getType() == ConnectivityManager.TYPE_WIFI)
+                return ConnectionType.WIFI;
+            else
+                return ConnectionType.OTHER;
+        }
+        else {
+            return ConnectionType.NONE;
+        }
     }
 
 

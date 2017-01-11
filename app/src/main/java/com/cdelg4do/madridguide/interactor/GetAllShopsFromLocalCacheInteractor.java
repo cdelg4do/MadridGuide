@@ -22,7 +22,7 @@ public class GetAllShopsFromLocalCacheInteractor {
     // This interface describes the behavior of a listener waiting for the completion of the background operation
     public interface GetAllShopsFromLocalCacheInteractorListener {
 
-        void onGetAllShopsFromLocalCacheFinished(Shops shops);
+        void onGetAllShopsFromLocalCacheCompletion(Shops shops);
     }
 
     // Executes the interactor's operations in a given context and with a given listener for the completion
@@ -38,7 +38,7 @@ public class GetAllShopsFromLocalCacheInteractor {
                 MainThread.run(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onGetAllShopsFromLocalCacheFinished(shops);
+                        listener.onGetAllShopsFromLocalCacheCompletion(shops);
                     }
                 });
             }

@@ -26,7 +26,7 @@ public class DeleteLocalCacheInteractor {
     // This interface describes the behavior of a listener waiting for the completion of the async operation
     public interface DeleteLocalCacheInteractorListener {
 
-        void onDeleteLocalCacheFinished();
+        void onDeleteLocalCacheCompletion();
     }
 
     /**
@@ -49,6 +49,8 @@ public class DeleteLocalCacheInteractor {
                 Log.d("DeleteLocalCache","Deleting all locally cached data...");
                 try { TimeUnit.SECONDS.sleep(2); } catch(InterruptedException e) {}
 
+                removeLastRefreshDate(context);
+                Log.d("DeleteLocalCache","Deleted last refresh date from preferences");
 
                 ShopDAO shopDAO = new ShopDAO(context);
                 final int shopCount = shopDAO.deleteAll();
@@ -57,13 +59,10 @@ public class DeleteLocalCacheInteractor {
                 ImageCacheManager.getInstance(context).clearCache();
                 Log.d("DeleteLocalCache","Deleted local images cache");
 
-                removeLastRefreshDate(context);
-                Log.d("DeleteLocalCache","Deleted last refresh date from preferences");
-
                 MainThread.run(new Runnable() {
                     @Override
                     public void run() {
-                        listener.onDeleteLocalCacheFinished();
+                        listener.onDeleteLocalCacheCompletion();
                     }
                 });
             }
