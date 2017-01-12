@@ -137,6 +137,51 @@ public class ShopDAO implements DAOPersistable<Shop> {
 
 
     /**
+     * Gets a cursor to all rows from the Shop table containing an specific string.
+     * (fields searched are name, description EN/ES and address)
+     */
+/*    @Nullable
+    @Override
+    public Cursor queryCursor(String queryString) {
+
+        String selection = KEY_SHOP_NAME +" LIKE ? OR "+
+                KEY_SHOP_DESCRIPTION_EN +" LIKE ? OR "+
+                KEY_SHOP_DESCRIPTION_ES +" LIKE ? OR "+
+                KEY_SHOP_ADDRESS + " LIKE ?";
+
+        String[] selectionArgs = new String[] {
+                "%"+ queryString +"%",
+                "%"+ queryString +"%",
+                "%"+ queryString +"%",
+                "%"+ queryString +"%"
+        };
+
+        Cursor c = db.query(TABLE_SHOP, ALL_COLUMNS_SHOP, selection, selectionArgs, null, null, null);
+
+        if (c != null && c.getCount() > 0)
+            c.moveToFirst();
+
+        return c;
+    }
+*/
+
+    /**
+     * Gets a cursor to all rows from the Shop table matching the given selection.
+     */
+    @Nullable
+    @Override
+    public Cursor queryCursor(String selection, String[] selectionArgs) {
+
+        Cursor c = db.query(TABLE_SHOP, ALL_COLUMNS_SHOP, selection, selectionArgs, null, null, null);
+
+        if (c != null && c.getCount() > 0)
+            c.moveToFirst();
+
+        return c;
+    }
+
+
+    /**
      * Gets from the database the Shop object with the given id.
      *
      * @param id the id of the row we are searching for.

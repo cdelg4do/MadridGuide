@@ -93,9 +93,9 @@
 
                     <TextView
                         android:id="@+id/activity_shop_detail_url_label"
+                        android:text="@string/activity_shop_detail_url_label_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Web site:"
                         android:textSize="18sp"
                         android:textStyle="normal|bold"/>
 
@@ -103,13 +103,13 @@
                         android:id="@+id/activity_shop_detail_url_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="http://www.google.com"
                         android:textSize="14sp"
                         android:typeface="monospace"
                         android:textStyle="normal|bold"
                         android:textColor="@android:color/holo_blue_dark"
                         android:gravity="right"
-                        android:autoLink="web"/>
+                        android:autoLink="web"
+                        tools:text="http://www.google.com"/>
 
                 </LinearLayout>
 
@@ -124,7 +124,7 @@
                         android:id="@+id/activity_shop_detail_openingHours_label"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Opening hours:"
+                        android:text="@string/activity_shop_detail_openingHours_label_txt"
                         android:textSize="18sp"
                         android:textStyle="normal|bold"/>
 
@@ -149,7 +149,7 @@
                         android:id="@+id/activity_shop_detail_address_label"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Address:"
+                        android:text="@string/activity_shop_detail_address_label_txt"
                         android:textSize="18sp"
                         android:textStyle="normal|bold"/>
 
@@ -157,16 +157,16 @@
                         android:id="@+id/activity_shop_detail_address_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="Calle de Claudio Coello, 46, 28001 Madrid"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp"
+                        tools:text="Calle de Claudio Coello, 46, 28001 Madrid"/>
 
                     <ToggleButton
                         android:id="@+id/activity_shop_detail_map_button"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_gravity="right"
-                        android:textOff="Show map"
-                        android:textOn="Hide map"
+                        android:textOff="@string/activity_shop_detail_map_button_txt_off"
+                        android:textOn="@string/activity_shop_detail_map_button_txt_on"
                         android:checked="false"/>
 
                     <FrameLayout
@@ -196,9 +196,9 @@
 
                     <TextView
                         android:id="@+id/activity_shop_detail_description_label"
+                        android:text="@string/activity_shop_detail_description_label_txt"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Description:"
                         android:textSize="18sp"
                         android:textStyle="normal|bold"/>
 
@@ -206,8 +206,8 @@
                         android:id="@+id/activity_shop_detail_description_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        tools:text="The creator Adolfo Dominguez store in Madrid’s luxury mile, can be considered as a sanctuary of fashion, occupying an entire building and is the largest designer store. We dare to say that you will find the complete collection for women and men, an exclusive section for brides dream decoration items and  an unusual corner of garments for your pets.  On the top floor is the exclusive cafe, where you can relax and muse over your day of shopping.\r\n \r\n"
-                        android:textSize="16sp"/>
+                        android:textSize="16sp"
+                        tools:text="The creator Adolfo Dominguez store in Madrid’s luxury mile, can be considered as a sanctuary of fashion, occupying an entire building and is the largest designer store. We dare to say that you will find the complete collection for women and men, an exclusive section for brides dream decoration items and  an unusual corner of garments for your pets.  On the top floor is the exclusive cafe, where you can relax and muse over your day of shopping.\r\n \r\n"/>
 
                 </LinearLayout>
 

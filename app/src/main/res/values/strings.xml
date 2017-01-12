@@ -1,17 +1,38 @@
 <resources>
-    <string name="app_name">MadridGuide</string>
+    <string name="app_name">Madrid Guide</string>
     <string name="error">ERROR</string>
     <string name="warning">WARNING</string>
-    <string name="activity_main_btn_shops_txt">Shops</string>
+    <string name="activity_main_btn_shops_txt">View shops</string>
+    <string name="activity_main_btn_experiences_txt">View activities</string>
+    <string name="main_activity_menu_refresh_title">Update from server</string>
+    <string name="main_activity_menu_about_txt">About this app...</string>
+    <string name="main_activity_about_title">About Madrid Guide</string>
+    <string name="main_activity_about_msg">"Carlos Delgado \u00A9 2017"</string>
     <string name="defaultProgressTitle">Please wait</string>
     <string name="refreshDialog_noInternetTitle">No Internet connection</string>
-    <string name="refreshDialog_noInternetMsg">MadridGuide needs to connect to the Internet in order to download up-to-date information. Please check your Internet connection and try again.</string>
+    <string name="refreshDialog_noInternetMsg">Madrid Guide needs to connect to the Internet in order to download up-to-date information. Please check your Internet connection and try again.</string>
     <string name="refreshDialog_noWifiTitle">No Wi-Fi connection</string>
-    <string name="refreshDialog_noWifiMsg">"MadridGuide is about to download up-to-date information from the Internet (mobile data charges may apply).\n\nDo you want to proceed?"</string>
+    <string name="refreshDialog_noWifiMsg">"Madrid Guide is about to download up-to-date information from the Internet (mobile data charges may apply).\n\nDo you want to proceed?"</string>
     <string name="discardLocalData_progressMsg">Discarding previous local data...</string>
     <string name="downloadShops_progressMsg">Downloading shops from server...</string>
     <string name="downloadShops_errorMsg">Unable to download the shops data, please check your internet connection and try again.</string>
     <string name="downloadShopImages_progressMsg">Downloading shop images...</string>
     <string name="downloadShopImages_warningMsg">"Some shop images could not be cached properly. Error count: "</string>
     <string name="cacheShops_errorMsg">Unable to store the shops data into the local cache, please try again.</string>
+
+    <string name="activity_shops_title">Madrid Guide - Shops</string>
+    <string name="permission_granted">Permission granted</string>
+    <string name="permission_denied_location">"Madrid Guide will not be able to show your location on the map!"</string>
+    <string name="activity_shops_menu_search_title">Search shops</string>
+    <string name="activity_shops_showing_results_head">Showing</string>
+    <string name="activity_shops_showing_results_tail">shop(s)</string>
+    <string name="activity_shops_showing_results_none">No matches found for your query</string>
+
+    <string name="activity_shop_detail_title">Madrid Guide - Shop detail</string>
+    <string name="activity_shop_detail_url_label_txt">"Web site:"</string>
+    <string name="activity_shop_detail_openingHours_label_txt">"Opening hours:"</string>
+    <string name="activity_shop_detail_address_label_txt">"Address:"</string>
+    <string name="activity_shop_detail_map_button_txt_off">Show map</string>
+    <string name="activity_shop_detail_map_button_txt_on">Hide map</string>
+    <string name="activity_shop_detail_description_label_txt">Description:</string>
 </resources>

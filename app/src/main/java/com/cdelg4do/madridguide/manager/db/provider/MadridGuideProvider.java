@@ -93,7 +93,13 @@ public class MadridGuideProvider extends ContentProvider {
 
             case ALL_SHOPS:
                 shopDAO = new ShopDAO( getContext() );
-                cursor = shopDAO.queryCursor();
+
+                if (where == null)
+                    cursor = shopDAO.queryCursor();
+
+                else
+                    cursor = shopDAO.queryCursor(where, whereArgs);
+
                 break;
 
             default:

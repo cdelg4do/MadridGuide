@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 
@@ -40,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Reference to UI elements (bind with Butterknife)
     @BindView(R.id.activity_main_btn_shops) Button btnShops;
-    @BindView(R.id.activity_main_btn_clear) Button btnClear;
+    @BindView(R.id.activity_main_btn_experiences) Button btnExperiences;
 
 
     @Override
@@ -63,6 +66,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // Options menu for this activity
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main_activiy_options_menu, menu);
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId())
+        {
+            case R.id.main_activity_menu_item_refresh:
+
+                checkDeviceConnectionBeforeRefreshData();
+                return true;
+
+            case R.id.main_activity_menu_item_about:
+
+                String title = getString(R.string.main_activity_about_title);
+                String msg = getString(R.string.main_activity_about_msg);
+                Utils.showMessage(this, msg, DIALOG, title);
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
 
     // Auxiliary methods:
 
@@ -72,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
         // The user cannot click any button until the app has downloaded data from the server
         if ( !deviceHasLocalData() ) {
             btnShops.setEnabled(false);
+            btnExperiences.setEnabled(false);
         }
 
         btnShops.setOnClickListener(new View.OnClickListener() {
@@ -81,16 +117,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-
-        btnClear.setOnClickListener(new View.OnClickListener() {
+        btnExperiences.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                checkDeviceConnectionBeforeRefreshData();
             }
         });
-
     }
 
     // If this is the first time the app runs, or if the last data refresh failed, returns false.

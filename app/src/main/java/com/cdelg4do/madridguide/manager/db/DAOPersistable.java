@@ -17,6 +17,7 @@ public interface DAOPersistable<T> {
     int deleteAll();
     @Nullable Cursor queryCursor();
     @Nullable Cursor queryCursor(long id);
+    @Nullable Cursor queryCursor(String selection, String[] selectionArgs);
     T query(final long id);
     @Nullable
     List<T> query();

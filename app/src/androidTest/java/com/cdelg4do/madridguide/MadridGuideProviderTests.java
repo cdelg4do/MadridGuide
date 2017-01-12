@@ -59,4 +59,37 @@ public class MadridGuideProviderTests extends AndroidTestCase {
         assertNotNull(insertedUri);
         assertEquals(beforeCount-1, afterCount);
     }
+
+/*
+    public void testQueryShopsByString() {
+
+        ContentResolver cr = getContext().getContentResolver();
+
+        String queryString = "Serrano";
+
+        String selection = KEY_SHOP_NAME +" LIKE ? OR "+
+                KEY_SHOP_DESCRIPTION_EN +" LIKE ? OR "+
+                KEY_SHOP_DESCRIPTION_ES +" LIKE ? OR "+
+                KEY_SHOP_ADDRESS + " LIKE ?";
+
+        String[] selectionArgs = new String[] {
+                "%"+ queryString +"%",
+                "%"+ queryString +"%",
+                "%"+ queryString +"%",
+                "%"+ queryString +"%"
+        };
+
+        Cursor c = cr.query(SHOPS_URI, ALL_COLUMNS_SHOP, selection, selectionArgs, null);
+
+        Shops shops = Shops.buildShopsFromCursor(c);
+
+        assertEquals(shops.size(),2);
+
+        for (Shop shop: shops.allShops())
+            Log.d("TEST", "NAME: "+ shop.getName() +" ID: "+ shop.getId() +" ADDRESS: "+ shop.getAddress());
+
+        assertEquals(shops.get(0).getName(),"Adolfo Dominguez");
+    }
+*/
+
 }

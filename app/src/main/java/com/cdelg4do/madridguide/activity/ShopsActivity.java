@@ -1,6 +1,7 @@
 package com.cdelg4do.madridguide.activity;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -12,7 +13,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.widget.Toast;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.SearchView;
 
 import com.cdelg4do.madridguide.R;
 import com.cdelg4do.madridguide.adapter.ShopInfoWindowAdapter;
@@ -34,12 +39,18 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_ADDRESS;
+import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_DESCRIPTION_EN;
+import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_DESCRIPTION_ES;
+import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_NAME;
 import static com.cdelg4do.madridguide.util.Constants.INITIAL_MAP_LATITUDE;
 import static com.cdelg4do.madridguide.util.Constants.INITIAL_MAP_LONGITUDE;
 import static com.cdelg4do.madridguide.util.Constants.INITIAL_MAP_ZOOM;
 import static com.cdelg4do.madridguide.util.Utils.MessageType.DIALOG;
+import static com.cdelg4do.madridguide.util.Utils.MessageType.TOAST;
 
 
 /**
@@ -48,12 +59,16 @@ import static com.cdelg4do.madridguide.util.Utils.MessageType.DIALOG;
  */
 public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private static final int REQUEST_CODE_ASK_LOCATION_PERMISSION = 123;
-    private static final int SHOPS_LOADER_ID = 0;
+    private static final int REQUEST_CODE_ASK_FOR_LOCATION_PERMISSION = 123;
+    private static final int ID_SHOPS_LOADER = 0;
+    private static final String SHOPS_LOADER_SELECTION_KEY = "SHOPS_LOADER_SELECTION_KEY";
+    private static final String SHOPS_LOADER_SELECTION_ARGS_KEY = "SHOPS_LOADER_SELECTION_ARGS_KEY";
 
+    private SearchView searchView;
     private SupportMapFragment mapFragment;
     private ShopListFragment shopListFragment;
     private GoogleMap map;
+    private ArrayList<Marker> currentMapMarkers;
 
 
     @Override
@@ -61,8 +76,10 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shops);
 
-        // Get the map fragment (note: a MapFragment is a native Fragment, NOT a support fragment)
+        setTitle(R.string.activity_shops_title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        // Get the map fragment
         mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_shops_fragment_map);
 
         // Get a reference to the map (is an async call, so configure the map only after it is received)
@@ -77,23 +94,53 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
         // Get the shop list fragment
         shopListFragment = (ShopListFragment) getSupportFragmentManager().findFragmentById(R.id.activity_shops_fragment_shops);
 
-        // Load all shops from the database using a loader:
-        // This is made by using a (Support)LoaderManager that initializes the loader.
-        // (first argument of initLoader() is the id for the new loader, if the activity
-        // is going to have several loaders, a different id for each one must be used).
-        // The loader's behavior is defined in onCreateLoader(), onLoadFinished() & onLoaderReset().
-
-        LoaderManager loaderManager = getSupportLoaderManager();
-        loaderManager.initLoader(SHOPS_LOADER_ID, null, this);
-
-        // Add a listener to the fragment that navigates to the Shop Detail activity when a cell is clicked
+        // Add a listener to the fragment (to navigate to the Detail activity when a row is clicked)
         shopListFragment.setOnElementClickedListener(new OnElementClickedListener<Shop>() {
-
             @Override
             public void onElementClicked(Shop shop, int position) {
                 Navigator.navigateFromShopsActivityToShopDetailActivity(ShopsActivity.this, shop);
             }
         });
+
+
+        // Initialize a loader to load all shops from the local cache (database).
+        // (first argument of initLoader() is the id for the new loader, if the activity
+        // is going to have several loaders, a different id for each one must be used)
+        //
+        // The loader's properties are defined in onCreateLoader()
+        // Binding the returned data to the Activity views is done in onLoadFinished()
+        LoaderManager loaderManager = getSupportLoaderManager();
+        loaderManager.initLoader(ID_SHOPS_LOADER, null, this);
+    }
+
+
+    // Options menu for this activity (including the search bar)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.shops_activity_options_menu, menu);
+
+        // Configure the search view
+        MenuItem searchItem = menu.findItem(R.id.shops_activity_menu_item_search);
+        searchView = (SearchView) searchItem.getActionView();
+        setupSearchView();
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 
@@ -101,16 +148,20 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
 
-        if (requestCode == REQUEST_CODE_ASK_LOCATION_PERMISSION) {
+        if (requestCode == REQUEST_CODE_ASK_FOR_LOCATION_PERMISSION) {
 
             if (ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
 
-                Toast.makeText(this, "Permission Granted", Toast.LENGTH_SHORT).show();
+                String msg = getString(R.string.permission_granted);
+                Utils.showMessage(this, msg, TOAST, null);
+
                 map.setMyLocationEnabled(true);
             }
             else {
-                Utils.showMessage(this,"MadridGuide will not be able to show your location on the map!", DIALOG, "Warning");
+                String title = getString(R.string.warning);
+                String msg = getString(R.string.permission_denied_location);
+                Utils.showMessage(this, msg, DIALOG, title);
             }
         }
     }
@@ -118,7 +169,8 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
 
     // Implementation of the LoaderManager.LoaderCallbacks<Cursor> interface:
 
-    // Called after LoaderManager.initLoader(), creates the loader that queries a ContentResolver in background
+    // Called after LoaderManager.initLoader() and loaderManager.restartLoader(),
+    // creates a loader that queries a ContentResolver in background
     @Override
     public Loader<Cursor> onCreateLoader(int loaderId, Bundle args) {
 
@@ -127,14 +179,27 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
         // Determine which loader is being initiated (in case the activity has several loaders)
         switch (loaderId) {
 
-            case SHOPS_LOADER_ID:
+            case ID_SHOPS_LOADER:
+
+                // Default selection (no filter)
+                String selection = null;
+                String[] selectionArgs = null;
+
+                // Get the necessary arguments to filter the query (if they were provided)
+                if (args != null &&
+                    args.getString(SHOPS_LOADER_SELECTION_KEY,null) != null &&
+                    args.getStringArray(SHOPS_LOADER_SELECTION_ARGS_KEY) != null)
+                {
+                    selection = args.getString(SHOPS_LOADER_SELECTION_KEY,null);
+                    selectionArgs = args.getStringArray(SHOPS_LOADER_SELECTION_ARGS_KEY);
+                }
 
                 cursorLoader = new CursorLoader(
                         this,                                // Loader's context
                         MadridGuideProvider.SHOPS_URI,      // Uri to get the data from a resolver
                         DBConstants.ALL_COLUMNS_SHOP,      // Fields to retrieve
-                        null,                                // where
-                        null,                                // where arguments
+                        selection,                           // where
+                        selectionArgs,                       // where arguments
                         null                                 // order by
                 );
 
@@ -153,11 +218,23 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
 
         switch (loader.getId()) {
 
-            case SHOPS_LOADER_ID:
-                // Create a new Shops object from the returned data, and pass it to the fragment
+            case ID_SHOPS_LOADER:
+
+                // Create a new Shops object from the returned data, and update the UI with it
                 final Shops shops = Shops.buildShopsFromCursor(data);
-                shopListFragment.setShopsAndUpdateFragmentUI(shops);
-                addShopMarkers(shops);
+                if (shops.size() > 0) {
+                    String msgHead = getString(R.string.activity_shops_showing_results_head);
+                    String msgTail = getString(R.string.activity_shops_showing_results_tail);
+                    Utils.showMessage(this, msgHead +" "+ shops.size() +" "+ msgTail, TOAST, null);
+
+                    shopListFragment.setShopsAndUpdateFragmentUI(shops);
+                    addShopMarkersToMap(shops);
+                }
+                else {
+                    String msg = getString(R.string.activity_shops_showing_results_none);
+                    Utils.showMessage(this, msg, TOAST, null);
+                }
+
                 break;
 
             default:
@@ -174,7 +251,7 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
 
     // Auxiliary methods:
 
-    // Initial settings for the map object (if it has already initialized)
+    // Initial settings for the map object
     private void setupMap() {
 
         if (map == null)
@@ -229,40 +306,134 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
         // ask the user and check response in onRequestPermissionsResult()
         else {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_LOCATION_PERMISSION);
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_FOR_LOCATION_PERMISSION);
         }
     }
 
 
     // Add markers to the map, corresponding to a given Shops object
-    private void addShopMarkers(@NonNull Shops shops) {
+    private void addShopMarkersToMap(@NonNull Shops shops) {
 
         if (map == null || shops == null)
             return;
 
         List<Shop> shopList = shops.allShops();
+        currentMapMarkers = new ArrayList<>();
 
-        for (Shop shop: shopList)
-            addShopMarker(shop);
+        for (Shop shop: shopList) {
+
+            LatLng shopLocation = new LatLng(shop.getLatitude(),shop.getLongitude());
+
+            // Adding the title here, allows to show it in the default info window of the marked
+            // (in case no custom info window is configured)
+            MarkerOptions markerOptions = new MarkerOptions()
+                    .position(shopLocation)
+                    .title(shop.getName());
+
+            // Add to the map a new marker, and store a reference to the Shop in the marker
+            // (it will be used when showing custom info windows)
+            Marker newMarker = map.addMarker(markerOptions);
+            newMarker.setTag(shop);
+
+            // Keep a reference to the added marker (in case we want clean the map later)
+            currentMapMarkers.add(newMarker);
+        }
     }
 
 
-    private void addShopMarker(@NonNull Shop shop) {
+    // Removes all existing markers from the map, and empties the list
+    private void clearPreviousSearchResults() {
 
-        if (map == null || shop == null)
+        for (Marker marker: currentMapMarkers)
+            marker.remove();
+
+        Shops emptyShops = Shops.buildShopsEmpty();
+        shopListFragment.setShopsAndUpdateFragmentUI(emptyShops);
+    }
+
+
+    // Sets the hint text and the behavior when the user types on the search box,
+    // when he clicks the search button, and when he closes the search view.
+    private void setupSearchView() {
+
+        if (searchView == null)
             return;
 
-        LatLng shopLocation = new LatLng(shop.getLatitude(),shop.getLongitude());
+        searchView.setQueryHint( getString(R.string.activity_shops_menu_search_title) );
 
-        // Adding the title here, allows to show it in the default info window of the marked
-        // (in case no custom info window is configured)
-        MarkerOptions markerOptions = new MarkerOptions()
-                .position(shopLocation)
-                .title(shop.getName());
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
 
-        // Add to the map a new marker, and store a reference to the Shop in the marker
-        // (it will be used when showing custom info windows)
-        Marker marker = map.addMarker(markerOptions);
-        marker.setTag(shop);
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                clearPreviousSearchResults();   // Clear map and empty the list
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+
+                removeFocusFromSearchView();
+                queryShopsByString(query);
+                return true;
+            }
+        });
+
+        searchView.setOnCloseListener(new SearchView.OnCloseListener() {
+
+            @Override
+            public boolean onClose() {
+
+                queryShopsByString("");   // Start a new query without any text filter
+                return false;
+            }
+        });
+    }
+
+
+    // Removes the focus from the search view and hides the screen keyboard
+    // (useful when the user clicks the search button)
+    private void removeFocusFromSearchView() {
+
+        if (searchView != null)
+            searchView.clearFocus();
+
+        InputMethodManager inputManager = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
+
+
+    // Start a new query filtering by all shops that contain a given string
+    // in any of these fields: name, description (EN/ES) and address.
+    // (if it is the empty string, then no filter will apply)
+    private void queryShopsByString(@NonNull String queryString) {
+
+        // Default filter arguments (no filter)
+        Bundle args = null;
+
+        // If there is a string to filter, build appropriate arguments for the loader
+        if ( queryString != null && !queryString.isEmpty() ) {
+
+            String selection =
+                    KEY_SHOP_NAME +" LIKE ? OR "+
+                    KEY_SHOP_DESCRIPTION_EN +" LIKE ? OR "+
+                    KEY_SHOP_DESCRIPTION_ES +" LIKE ? OR "+
+                    KEY_SHOP_ADDRESS + " LIKE ?";
+
+            String[] selectionArgs = new String[] {
+                    "%"+ queryString +"%",
+                    "%"+ queryString +"%",
+                    "%"+ queryString +"%",
+                    "%"+ queryString +"%"
+            };
+
+            args = new Bundle();
+            args.putString(SHOPS_LOADER_SELECTION_KEY, selection);
+            args.putStringArray(SHOPS_LOADER_SELECTION_ARGS_KEY, selectionArgs);
+        }
+
+        // Restart the loader with the new arguments
+        LoaderManager loaderManager = getSupportLoaderManager();
+        loaderManager.restartLoader(ID_SHOPS_LOADER, args, this);
     }
 }

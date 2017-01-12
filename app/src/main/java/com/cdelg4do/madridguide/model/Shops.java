@@ -84,8 +84,11 @@ public class Shops implements ShopsIterable, ShopsUpdatable {
 
         final List<Shop> shopList = new LinkedList<>();
 
-        while ( cursor.moveToNext() ) {
-            shopList.add( Shop.buildShopFromCursor(cursor) );
+        if ( cursor.moveToFirst() ) {
+            do{
+                shopList.add( Shop.buildShopFromCursor(cursor) );
+            }
+            while(cursor.moveToNext());
         }
 
         return Shops.buildShopsFromList(shopList);

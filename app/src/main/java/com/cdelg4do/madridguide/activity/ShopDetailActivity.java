@@ -3,6 +3,7 @@ package com.cdelg4do.madridguide.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -50,12 +51,37 @@ public class ShopDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop_detail);
 
-        // Bind all views of this activity (with Butterknife)
+        setTitle(R.string.activity_shop_detail_title);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Bind all views of this activity (with ButterKnife)
         ButterKnife.bind(this);
 
-        // Get the Shop object passed to the activity
+        // Get the Shop object passed to the activity and show it
         Intent intent = getIntent();
         shop = (Shop) intent.getSerializableExtra(INTENT_KEY_DETAIL_SHOP);
+        syncViewFromModel();
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+
+    // Auxiliary methods:
+
+    private void syncViewFromModel() {
 
         if (shop != null) {
 
@@ -108,4 +134,5 @@ public class ShopDetailActivity extends AppCompatActivity {
 
         }
     }
+
 }
