@@ -344,8 +344,10 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
     // Removes all existing markers from the map, and empties the list
     private void clearPreviousSearchResults() {
 
-        for (Marker marker: currentMapMarkers)
-            marker.remove();
+        if (currentMapMarkers != null) {
+            for (Marker marker : currentMapMarkers)
+                marker.remove();
+        }
 
         Shops emptyShops = Shops.buildShopsEmpty();
         shopListFragment.setShopsAndUpdateFragmentUI(emptyShops);
