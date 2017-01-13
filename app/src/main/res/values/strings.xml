@@ -21,8 +21,11 @@
     <string name="cacheShops_errorMsg">Unable to store the shops data into the local cache, please try again.</string>
 
     <string name="activity_shops_title">Madrid Guide - Shops</string>
+    <string name="permission_location_rationale_title">"Access to device's location"</string>
+    <string name="permission_location_rationale_msg">"In order to show your current position on the map, Madrid Guide will ask you to grant access to this device's location."</string>
     <string name="permission_granted">Permission granted</string>
-    <string name="permission_denied_location">"Madrid Guide will not be able to show your location on the map!"</string>
+    <string name="permission_denied_location_title">"Permission denied"</string>
+    <string name="permission_denied_location_msg">"Madrid Guide will not be able to show your position on the map."</string>
     <string name="activity_shops_menu_search_title">Search shops</string>
     <string name="activity_shops_showing_results_head">Showing</string>
     <string name="activity_shops_showing_results_tail">shop(s)</string>

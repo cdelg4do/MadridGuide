@@ -99,6 +99,25 @@ public abstract class Utils {
     }
 
 
+    public static void showAcceptDialog(Context ctx, String title, String msg, OnClickListener acceptListener) {
+
+        if (acceptListener == null)
+            acceptListener = new OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                }
+            };
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(ctx);
+        builder.setTitle(title);
+        builder.setMessage(msg);
+        builder.setPositiveButton(ctx.getResources().getString(android.R.string.ok), acceptListener);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
+
+
     public static ProgressDialog newProgressDialog(Context ctx, String msg) {
 
         final ProgressDialog pDialog = new ProgressDialog(ctx);

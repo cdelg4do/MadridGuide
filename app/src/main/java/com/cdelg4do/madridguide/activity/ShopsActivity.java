@@ -1,8 +1,7 @@
 package com.cdelg4do.madridguide.activity;
 
-import android.Manifest;
 import android.content.Context;
-import android.content.pm.PackageManager;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -42,6 +41,8 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_ADDRESS;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_DESCRIPTION_EN;
 import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_DESCRIPTION_ES;
@@ -151,7 +152,7 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
         if (requestCode == REQUEST_CODE_ASK_FOR_LOCATION_PERMISSION) {
 
             if (ContextCompat.checkSelfPermission(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                    ACCESS_FINE_LOCATION) == PERMISSION_GRANTED) {
 
                 String msg = getString(R.string.permission_granted);
                 Utils.showMessage(this, msg, TOAST, null);
@@ -159,8 +160,8 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
                 map.setMyLocationEnabled(true);
             }
             else {
-                String title = getString(R.string.warning);
-                String msg = getString(R.string.permission_denied_location);
+                String title = getString(R.string.permission_denied_location_title);
+                String msg = getString(R.string.permission_denied_location_msg);
                 Utils.showMessage(this, msg, DIALOG, title);
             }
         }
@@ -295,18 +296,35 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
     private void enableUserLocationOnMap() {
 
         // Starting on API 23, it is necessary to perform a runtime check to see
-        // if the app has been granted permission to do something before doing it.
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-
+        // if the app has been granted permission to do something, before doing it.
+        if (ContextCompat.checkSelfPermission(this,ACCESS_FINE_LOCATION) == PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
         }
 
-        // If the app has not been granted permission yet,
-        // ask the user and check response in onRequestPermissionsResult()
+        // If the app has not been granted permission yet, ask the user to grant it
+        // (if he already rejected this in the past, show him a short explanation first)
         else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_CODE_ASK_FOR_LOCATION_PERMISSION);
+
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,ACCESS_FINE_LOCATION)) {
+
+                String title = getString(R.string.permission_location_rationale_title);
+                String msg = getString(R.string.permission_location_rationale_msg);
+                Utils.showAcceptDialog(this, title, msg, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        ActivityCompat.requestPermissions(ShopsActivity.this,
+                                new String[]{ACCESS_FINE_LOCATION},
+                                REQUEST_CODE_ASK_FOR_LOCATION_PERMISSION
+                        );
+                    }
+                });
+            }
+            else {
+                ActivityCompat.requestPermissions(this, new String[]{ACCESS_FINE_LOCATION},
+                        REQUEST_CODE_ASK_FOR_LOCATION_PERMISSION
+                );
+            }
         }
     }
 
