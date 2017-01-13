@@ -85,7 +85,7 @@ public class MadridGuideProviderTests extends AndroidTestCase {
 
         assertEquals(shops.size(),2);
 
-        for (Shop shop: shops.allShops())
+        for (Shop shop: shops.allElements())
             Log.d("TEST", "NAME: "+ shop.getName() +" ID: "+ shop.getId() +" ADDRESS: "+ shop.getAddress());
 
         assertEquals(shops.get(0).getName(),"Adolfo Dominguez");

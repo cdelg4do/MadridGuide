@@ -19,7 +19,7 @@ public class ShopsTests extends AndroidTestCase {
         Shops sut = Shops.buildShopsFromList(null);
 
         assertNotNull(sut);
-        assertNotNull( sut.allShops() );
+        assertNotNull( sut.allElements() );
     }
 
     public void testCreatingAShopsWithAListReturnsNonNullShops() {
@@ -29,9 +29,9 @@ public class ShopsTests extends AndroidTestCase {
         Shops sut = Shops.buildShopsFromList(testData);
 
         assertNotNull(sut);
-        assertNotNull(sut.allShops() );
-        assertEquals(sut.allShops(), testData);
-        assertEquals(sut.allShops().size(), testData.size() );
+        assertNotNull(sut.allElements() );
+        assertEquals(sut.allElements(), testData);
+        assertEquals(sut.allElements().size(), testData.size() );
     }
 
 

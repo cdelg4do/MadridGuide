@@ -317,7 +317,7 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
         if (map == null || shops == null)
             return;
 
-        List<Shop> shopList = shops.allShops();
+        List<Shop> shopList = shops.allElements();
         currentMapMarkers = new ArrayList<>();
 
         for (Shop shop: shopList) {

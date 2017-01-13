@@ -56,7 +56,7 @@ public class CacheAllImagesInteractor {
             // Build a Map to keep track of each url status (in the beginning, all pending)
             Map<String,Status> urlMap = new LinkedHashMap<>();
 
-            for (Shop shop : shops.allShops()) {
+            for (Shop shop : shops.allElements()) {
                 urlMap.put(shop.getLogoImgUrl(), PENDING);
                 urlMap.put(shop.getImageUrl(), PENDING);
                 urlMap.put(shop.getMapUrl(), PENDING);

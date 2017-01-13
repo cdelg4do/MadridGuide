@@ -46,7 +46,7 @@ public class CacheAllShopsInteractor {
                 ShopDAO shopDAO = new ShopDAO(context);
                 boolean success = true;
 
-                for (Shop shop: shops.allShops()) {
+                for (Shop shop: shops.allElements()) {
 
                     success = ( shopDAO.insert(shop) != INVALID_ID );
 

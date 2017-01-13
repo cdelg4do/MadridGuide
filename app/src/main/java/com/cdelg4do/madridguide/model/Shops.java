@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * This class represents an aggregate of Shop objects.
  */
-public class Shops implements ShopsIterable, ShopsUpdatable {
+public class Shops implements IterableAggregate<Shop>, UpdatableAggregate<Shop> {
 
     List<Shop> shopList;
 
@@ -25,7 +25,7 @@ public class Shops implements ShopsIterable, ShopsUpdatable {
     }
 
 
-    // Methods from interface ShopsIterable:
+    // Methods from interface IterableAggregate:
 
     @Override
     public long size() {
@@ -38,26 +38,26 @@ public class Shops implements ShopsIterable, ShopsUpdatable {
     }
 
     @Override
-    public List<Shop> allShops() {
+    public List<Shop> allElements() {
         return shopList;
     }
 
 
-    // Methods from interface ShopsUpdatable:
+    // Methods from interface UpdatableAggregate:
 
     @Override
-    public void add(Shop shop) {
-        shopList.add(shop);
+    public void add(Shop element) {
+        shopList.add(element);
     }
 
     @Override
-    public void delete(Shop shop) {
-        shopList.remove(shop);
+    public void delete(Shop element) {
+        shopList.remove(element);
     }
 
     @Override
-    public void edit(Shop newShop, long index) {
-        shopList.set((int)index, newShop);
+    public void update(Shop newElement, long index) {
+        shopList.set((int)index, newElement);
     }
 
 
