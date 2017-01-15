@@ -24,7 +24,7 @@
     <string name="cacheImages_progressMsg">Descargando imágenes...</string>
     <string name="cacheImages_warningMsg">"imágenes no puduieron descargarse y no se mostrarán correctamente."</string>
 
-    <string name="activity_shops_title">Madrid Guide - Tiendas</string>
+    <string name="activity_shops_title">Madrid Guide Tiendas</string>
     <string name="activity_shops_menu_search_title">Buscar tiendas</string>
     <string name="activity_shops_showing_results_head">Mostrando</string>
     <string name="activity_shops_showing_results_tail">tienda(s)</string>

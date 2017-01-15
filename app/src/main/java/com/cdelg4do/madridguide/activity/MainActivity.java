@@ -59,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        setTitle("");
 
         // Initial settings for the shops button (set listener & disable it)
         setupActivityButtons();

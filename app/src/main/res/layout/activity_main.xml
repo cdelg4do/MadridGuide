@@ -1,31 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="?attr/colorPrimaryDark"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.cdelg4do.madridguide.activity.MainActivity">
 
-    <Button
-        android:id="@+id/activity_main_btn_shops"
-        android:text="@string/activity_main_btn_shops_txt"
-        android:layout_width="@dimen/activity_main_btn_shops_width"
-        android:layout_height="@dimen/activity_main_btn_shops_height"
+    <ImageView
+        android:id="@+id/activity_main_img_logo"
+        app:srcCompat="@drawable/main_logo"
+        android:layout_width="@dimen/activity_main_logo_width"
+        android:layout_height="@dimen/activity_main_logo_height"
+        android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:layout_margin="10dp"/>
+        android:scaleType="centerCrop"
+        android:layout_marginTop="15dp"/>
 
     <Button
         android:id="@+id/activity_main_btn_experiences"
         android:text="@string/activity_main_btn_experiences_txt"
-        android:layout_width="@dimen/activity_main_btn_shops_width"
-        android:layout_height="@dimen/activity_main_btn_shops_height"
-        android:layout_below="@+id/activity_main_btn_shops"
-        android:layout_alignLeft="@+id/activity_main_btn_shops"
-        android:layout_alignStart="@+id/activity_main_btn_shops"/>
+        android:layout_width="@dimen/activity_main_btns_width"
+        android:layout_height="@dimen/activity_main_btns_height"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"/>
+
+    <Button
+        android:id="@+id/activity_main_btn_shops"
+        android:text="@string/activity_main_btn_shops_txt"
+        android:layout_width="@dimen/activity_main_btns_width"
+        android:layout_height="@dimen/activity_main_btns_height"
+        android:layout_above="@+id/activity_main_btn_experiences"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="15dp"/>
 
 </RelativeLayout>
