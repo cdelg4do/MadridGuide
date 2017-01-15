@@ -1,0 +1,60 @@
+<resources>
+
+
+    <string name="error">Error</string>
+    <string name="warning">Aviso</string>
+    <string name="activity_main_btn_shops_txt">Ver tiendas</string>
+    <string name="activity_main_btn_experiences_txt">Ver actividades</string>
+    <string name="main_activity_menu_refresh_title">Actualizar desde el servidor</string>
+    <string name="main_activity_menu_about_txt">Acerca de esta app...</string>
+    <string name="main_activity_about_title">Acerca de Madrid Guide</string>
+    <string name="main_activity_about_msg">"Carlos Delgado \u00A9 2017"</string>
+    <string name="defaultProgressTitle">Por favor, espere...</string>
+    <string name="refreshDialog_noInternetTitle">Sin conexión a internet</string>
+    <string name="refreshDialog_noInternetMsg">Madrid Guide necesita una conexión a internet para descargar la información más reciente. Por favor, compruebe su conexión a internet e inténtelo de nuevo.</string>
+    <string name="refreshDialog_noWifiTitle">Sin conexión wifi</string>
+    <string name="refreshDialog_noWifiMsg">"Madrid Guide está a punto de descargarse la información más actualizada desde internet (podrían aplicarse cargos adicionales por tráfico de datos).\n\n¿Desea continuar?"</string>
+    <string name="discardLocalData_progressMsg">Eliminando datos locales antiguos...</string>
+    <string name="downloadShops_progressMsg">Descargando tiendas...</string>
+    <string name="downloadShops_errorMsg">No ha sido posible descargar la información sobre las tiendas. Por favor, compruebe su conexión a intenet e inténtelo de nuevo.</string>
+    <string name="cacheShops_errorMsg">No ha sido posible almacenar localmente la información sobre las tiendas. Por favor, vuelva a intentarlo.</string>
+    <string name="downloadActivities_progressMsg">Descargando actividades...</string>
+    <string name="downloadActivities_errorMsg">No ha sido posible descargar la información sobre las actividades. Por favor, compruebe su conexión a intenet e inténtelo de nuevo.</string>
+    <string name="cacheActivities_errorMsg">No ha sido posible almacenar localmente la información sobre las actividades. Por favor, vuelva a intentarlo.</string>
+    <string name="cacheImages_progressMsg">Descargando imágenes...</string>
+    <string name="cacheImages_warningMsg">"imágenes no puduieron descargarse y no se mostrarán correctamente."</string>
+
+    <string name="activity_shops_title">Madrid Guide - Tiendas</string>
+    <string name="activity_shops_menu_search_title">Buscar tiendas</string>
+    <string name="activity_shops_showing_results_head">Mostrando</string>
+    <string name="activity_shops_showing_results_tail">tienda(s)</string>
+    <string name="activity_shops_showing_results_none">Ninguna tienda coincide con su búsqueda</string>
+
+    <string name="permission_location_rationale_title">"Acceso a la ubicación del dispositivo"</string>
+    <string name="permission_location_rationale_msg">"Para mostrar su posición actual en el mapa, Madrid Guide le pedirá permiso para acceder a la ubicación del dispositivo."</string>
+    <string name="permission_granted">Permiso concedido</string>
+    <string name="permission_denied_location_title">"Permiso denegado"</string>
+    <string name="permission_denied_location_msg">"Madrid Guide no podrá mostrar su posición en el mapa."</string>
+
+    <string name="activity_experiences_title">Madrid Guide Actividades</string>
+    <string name="activity_experiences_menu_search_title">Buscar actividades</string>
+    <string name="activity_experiences_showing_results_head">Mostrando</string>
+    <string name="activity_experiences_showing_results_tail">actividades</string>
+    <string name="activity_experiences_showing_results_none">Ninguna actividad coincide con su búsqueda</string>
+
+    <string name="activity_shop_detail_title">Detalle de la tienda</string>
+    <string name="activity_shop_detail_url_label_txt">"Sitio web:"</string>
+    <string name="activity_shop_detail_openingHours_label_txt">"Horario:"</string>
+    <string name="activity_shop_detail_address_label_txt">"Dirección:"</string>
+    <string name="activity_shop_detail_map_button_txt_off">Ver mapa</string>
+    <string name="activity_shop_detail_map_button_txt_on">Ocular mapa</string>
+    <string name="activity_shop_detail_description_label_txt">Descripción:</string>
+
+    <string name="activity_experience_detail_title">Detalle de la actividad</string>
+    <string name="activity_experience_detail_url_label_txt">"Sitio web:"</string>
+    <string name="activity_experience_detail_openingHours_label_txt">"Horario:"</string>
+    <string name="activity_experience_detail_address_label_txt">"Dirección:"</string>
+    <string name="activity_experience_detail_map_button_txt_off">Ver mapa</string>
+    <string name="activity_experience_detail_map_button_txt_on">Ocultar mapa</string>
+    <string name="activity_experience_detail_description_label_txt">Descripción:</string>
+</resources>

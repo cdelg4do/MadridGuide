@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Madrid Guide</string>
+    <string name="app_name" translatable="false">Madrid Guide</string>
+
     <string name="error">Error</string>
     <string name="warning">Warning</string>
     <string name="activity_main_btn_shops_txt">View shops</string>
