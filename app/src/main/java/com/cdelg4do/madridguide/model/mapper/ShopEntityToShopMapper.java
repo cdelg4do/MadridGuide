@@ -14,7 +14,7 @@ import static com.cdelg4do.madridguide.util.Constants.LANG_SPANISH;
 /**
  * This class is used to map a list of ShopEntity JSON objects to a list of Shop model objects.
  */
-public class ShopEntityShopMapper {
+public class ShopEntityToShopMapper {
 
     public List<Shop> map(List<ShopsResponse.ShopEntity> shopEntities) {
 

@@ -31,12 +31,15 @@ public class NetworkManager {
 
         NONE,
         WIFI,
-        OTHER   // mobile, wimax, vpn, etc
+        OTHER   // mobile, wimax, vpn, etc.
     }
 
-    public interface NetworkShopsRequestListener {
-        void onNetworkShopsRequestSuccess(List<ShopsResponse.ShopEntity> shopEntities);
-        void onNetworkShopsRequestFail(Exception e);
+    // This interface describes the behavior of a listener waiting for the completion of the network operation
+    // (object result should be casted to the appropriate object, depending on the request type)
+    public interface NetworkRequestListener {
+
+        void onNetworkRequestSuccess(Object result);
+        void onNetworkRequestFail(Exception e);
     }
 
     private WeakReference<Context> context;
@@ -50,7 +53,7 @@ public class NetworkManager {
 
 
     // Request a string response from the shops URL
-    public void getShopsFromServer(final @NonNull NetworkShopsRequestListener listener) {
+    public void getShopsFromServer(final @NonNull NetworkRequestListener listener) {
 
         if (listener == null)
             return;
@@ -66,19 +69,52 @@ public class NetworkManager {
                     @Override
                     public void onResponse(String response) {
                         List<ShopsResponse.ShopEntity> shopEntities = parseShopsRequestResponse(response);
-                        listener.onNetworkShopsRequestSuccess(shopEntities);
+                        listener.onNetworkRequestSuccess(shopEntities);
                     }
                 },
 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        listener.onNetworkShopsRequestFail(error);
+                        listener.onNetworkRequestFail(error);
                     }
                 }
         );
 
         queue.add(shopsRequest);
+    }
+
+
+    // Request a string response from the activities URL
+    public void getActivitiesFromServer(final @NonNull NetworkRequestListener listener) {
+
+        if (listener == null)
+            return;
+
+        RequestQueue queue = Volley.newRequestQueue( context.get() );
+        String requestUrl = context.get().getString(R.string.activities_url);
+
+        StringRequest activitiesRequest = new StringRequest(
+
+                requestUrl,
+
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        List<ExperiencesResponse.ExperienceEntity> experienceEntities = parseActivitiesRequestResponse(response);
+                        listener.onNetworkRequestSuccess(experienceEntities);
+                    }
+                },
+
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        listener.onNetworkRequestFail(error);
+                    }
+                }
+        );
+
+        queue.add(activitiesRequest);
     }
 
 
@@ -112,9 +148,29 @@ public class NetworkManager {
 
             // Use Gson to parse the JSON response reader to a ShopsResponse object
             Gson gson = new GsonBuilder().create();
-            ShopsResponse shopResponse = gson.fromJson(reader, ShopsResponse.class);
+            ShopsResponse shopsResponse = gson.fromJson(reader, ShopsResponse.class);
 
-            result = shopResponse.getResult();
+            result = shopsResponse.getResult();
+        }
+        catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    private List<ExperiencesResponse.ExperienceEntity> parseActivitiesRequestResponse(String response) {
+
+        List<ExperiencesResponse.ExperienceEntity> result = null;
+
+        try {
+            Reader reader = new StringReader(response);
+
+            // Use Gson to parse the JSON response reader to an ExperienceResponse object
+            Gson gson = new GsonBuilder().create();
+            ExperiencesResponse experiencesResponse = gson.fromJson(reader, ExperiencesResponse.class);
+
+            result = experiencesResponse.getResult();
         }
         catch (RuntimeException e) {
             e.printStackTrace();

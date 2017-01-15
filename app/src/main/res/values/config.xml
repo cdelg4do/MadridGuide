@@ -3,4 +3,5 @@
     <!-- <string name="shops_url">http://demo3359514.mockable.io/shops.json</string> -->
     <!-- <string name="shops_url">http://www.mocky.io/v2/5873d54e0f0000c31052e227</string> --> <!-- Test: 1 shop -->
     <string name="shops_url">http://www.mocky.io/v2/587459990f0000872152e27f</string> <!-- Test: 12 shops -->
+    <string name="activities_url">http://madrid-shops.com/json_new/getActivities.php</string>
 </resources>

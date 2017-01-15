@@ -15,12 +15,14 @@ import android.view.View;
 import android.widget.Button;
 
 import com.cdelg4do.madridguide.R;
+import com.cdelg4do.madridguide.interactor.CacheEntitiesInteractor;
 import com.cdelg4do.madridguide.interactor.CacheAllImagesInteractor;
-import com.cdelg4do.madridguide.interactor.CacheAllShopsInteractor;
 import com.cdelg4do.madridguide.interactor.DeleteLocalCacheInteractor;
-import com.cdelg4do.madridguide.interactor.DownloadAllShopsInteractor;
+import com.cdelg4do.madridguide.interactor.DownloadEntitiesInteractor;
+import com.cdelg4do.madridguide.interactor.DownloadEntitiesInteractor.DownloadEntitiesInteractorListener;
 import com.cdelg4do.madridguide.manager.net.NetworkManager;
 import com.cdelg4do.madridguide.manager.net.NetworkManager.ConnectionType;
+import com.cdelg4do.madridguide.model.Experiences;
 import com.cdelg4do.madridguide.model.Shops;
 import com.cdelg4do.madridguide.navigator.Navigator;
 import com.cdelg4do.madridguide.util.Utils;
@@ -30,6 +32,8 @@ import java.util.Date;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.cdelg4do.madridguide.interactor.DownloadEntitiesInteractor.RemoteSource.ACTIVITIES;
+import static com.cdelg4do.madridguide.interactor.DownloadEntitiesInteractor.RemoteSource.SHOPS;
 import static com.cdelg4do.madridguide.manager.net.NetworkManager.ConnectionType.NONE;
 import static com.cdelg4do.madridguide.manager.net.NetworkManager.ConnectionType.WIFI;
 import static com.cdelg4do.madridguide.util.Constants.CACHE_MAX_DAYS_LIMIT;
@@ -45,6 +49,10 @@ public class MainActivity extends AppCompatActivity {
     @BindView(R.id.activity_main_btn_shops) Button btnShops;
     @BindView(R.id.activity_main_btn_experiences) Button btnExperiences;
 
+    // Reference to the entities downloaded after refreshing from the server
+    private Shops downloadedShops;
+    private Experiences downloadedExperiences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
         // Check if the local data are too old (or do not exist)
         if (isLocalDataOlderThan(CACHE_MAX_DAYS_LIMIT)) {
 
-            checkDeviceConnectionBeforeRefreshData();
+            initiateDataRefreshFromServer();
         }
         else {
 
@@ -82,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         {
             case R.id.main_activity_menu_item_refresh:
 
-                checkDeviceConnectionBeforeRefreshData();
+                initiateDataRefreshFromServer();
                 return true;
 
             case R.id.main_activity_menu_item_about:
@@ -153,16 +161,18 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Starts the following sequence of calls to refresh the locally stored data:
+     * This is the first in the call sequence to refresh the locally stored data:
      *
-     * 1- This method:          Check the device's connection and start the process (if applicable).
-     * 2- discardLocalData():   Clean local cache (database + images).
-     * 3- getShopsFromServer(): Download and parse Shop data from the server.
-     * 4- persistShopsData():   Store the shop data in the local cache (database).
-     * 5- cacheAllShopImages(): Download and locally cache the images of all shops.
-     * 6- finishActivitySetup(): Finish all the settings.
+     * 1- This method:              Check the device's connection and start the process (if possible).
+     * 2- discardLocalData()        Clean local cache (database + images).
+     * 3- getShopsFromServer()      Download and parse Shops data from the server.
+     * 4- persistShopsData()        Store the shops data in the local cache (database).
+     * 5- getActivitiesFromServer() Download and parse Activities data from the server.
+     * 6- persistActivitiesData()   Store the activities data in the local cache (database).
+     * 5- cacheAllImages()          Download and locally cache the images of all shops and activities.
+     * 6- finishActivitySetup()     Finish all the settings.
      */
-    private void checkDeviceConnectionBeforeRefreshData() {
+    private void initiateDataRefreshFromServer() {
 
         ConnectionType deviceConnection = NetworkManager.getInternetConnectionType(this);
 
@@ -177,14 +187,14 @@ public class MainActivity extends AppCompatActivity {
             discardLocalData();
         }
 
+        // On non-wifi connections, ask the user before proceeding
         else {
             String title = getString(R.string.refreshDialog_noWifiTitle);
             String msg = getString(R.string.refreshDialog_noWifiMsg);
-
             Utils.showCancelAcceptDialog(this, title, msg, null, new OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-                    // If the user accepts, then start removing the previously downloaded data
+
                     discardLocalData();
                 }
             });
@@ -214,13 +224,13 @@ public class MainActivity extends AppCompatActivity {
 
         pDialog.setMessage(getString(R.string.downloadShops_progressMsg));
 
-        // Use a DownloadAllShopsInteractor to download data from all shops,
+        // Use a DownloadEntitiesInteractor to download data from all shops,
         // then try to store the data into the local cache.
-        new DownloadAllShopsInteractor().execute(MainActivity.this,
-                new DownloadAllShopsInteractor.DownloadAllShopsInteractorListener() {
+        new DownloadEntitiesInteractor().execute(MainActivity.this, SHOPS,
+                new DownloadEntitiesInteractorListener() {
 
                     @Override
-                    public void onGetAllShopsFail(Exception e) {
+                    public void onDownloadEntitiesFail(Exception e) {
 
                         pDialog.dismiss();
                         Log.e("MainActivity","Failed to download the shops info: "+ e.toString() );
@@ -231,23 +241,25 @@ public class MainActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onGetAllShopsSuccess(Shops shops) {
-                        Log.d("MainActivity","Successfully downloaded info for "+ shops.size() +" shop(s)");
+                    public void onDownloadEntitiesSuccess(Object downloadedEntities) {
 
-                        persistShopsData(shops,pDialog);
+                        downloadedShops = (Shops) downloadedEntities;
+                        Log.d("MainActivity","Successfully downloaded info for "+ downloadedShops.size() +" shop(s)");
+
+                        persistShopsData(pDialog);
                     }
                 }
         );
     }
 
-    private void persistShopsData(final Shops shops, final ProgressDialog pDialog) {
+    private void persistShopsData(final ProgressDialog pDialog) {
 
-        // Use a CacheAllShopsInteractor to store the received data in the local cache
-        new CacheAllShopsInteractor().execute(MainActivity.this, shops,
-                new CacheAllShopsInteractor.CacheAllShopsInteractorListener() {
+        // Use a CacheEntitiesInteractor to store the received data in the local cache
+        new CacheEntitiesInteractor().execute(MainActivity.this, downloadedShops,
+                new CacheEntitiesInteractor.CacheEntitiesInteractorListener() {
 
                     @Override
-                    public void onCacheAllShopsCompletion(boolean success) {
+                    public void onCacheEntitiesCompletion(boolean success) {
 
                         if (!success) {
                             pDialog.dismiss();
@@ -259,31 +271,91 @@ public class MainActivity extends AppCompatActivity {
                             return;
                         }
 
-                        cacheAllShopImages(shops,pDialog);
+                        getActivitiesFromServer(pDialog);
                     }
                 }
         );
     }
 
-    private void cacheAllShopImages(final Shops shops, final ProgressDialog pDialog) {
+    private void getActivitiesFromServer(final ProgressDialog pDialog) {
 
-        pDialog.setMessage(getString(R.string.downloadShopImages_progressMsg));
+        pDialog.setMessage(getString(R.string.downloadActivities_progressMsg));
 
-        // Use a CacheAllImagesInteractor to download and cache the pictures of all shops
-        new CacheAllImagesInteractor().execute(MainActivity.this, shops,
+        // Use a DownloadEntitiesInteractor to download data from all activities,
+        // then try to store the data into the local cache.
+        new DownloadEntitiesInteractor().execute(MainActivity.this, ACTIVITIES,
+                new DownloadEntitiesInteractor.DownloadEntitiesInteractorListener() {
+
+                    @Override
+                    public void onDownloadEntitiesFail(Exception e) {
+
+                        pDialog.dismiss();
+                        Log.e("MainActivity","Failed to download the activities info: "+ e.toString() );
+
+                        String title = getString(R.string.error);
+                        String msg = getString(R.string.downloadActivities_errorMsg);
+                        Utils.showMessage(MainActivity.this, msg, DIALOG, title);
+                    }
+
+                    @Override
+                    public void onDownloadEntitiesSuccess(Object downloadedEntities) {
+
+                        downloadedExperiences = (Experiences) downloadedEntities;
+                        Log.d("MainActivity","Successfully downloaded info for "+ downloadedExperiences.size() +" shop(s)");
+
+                        persistActivitiesData(pDialog);
+                    }
+                }
+        );
+    }
+
+    private void persistActivitiesData(final ProgressDialog pDialog) {
+
+        // Use a CacheEntitiesInteractor to store the received data in the local cache
+        new CacheEntitiesInteractor().execute(MainActivity.this, downloadedExperiences,
+                new CacheEntitiesInteractor.CacheEntitiesInteractorListener() {
+
+                    @Override
+                    public void onCacheEntitiesCompletion(boolean success) {
+
+                        if (!success) {
+                            pDialog.dismiss();
+                            Log.e("MainActivity","Unable to store the downloaded activities into the local cache");
+
+                            String title = getString(R.string.error);
+                            String msg = getString(R.string.cacheActivities_errorMsg);
+                            Utils.showMessage(MainActivity.this, msg, DIALOG, title);
+                            return;
+                        }
+
+                        cacheAllImages(pDialog);
+                    }
+                }
+        );
+    }
+
+    private void cacheAllImages(final ProgressDialog pDialog) {
+
+        pDialog.setMessage(getString(R.string.cacheImages_progressMsg));
+
+        // Use a CacheAllImagesInteractor to download and cache the pictures of all shops and activities
+        new CacheAllImagesInteractor().execute(
+                MainActivity.this,
+                downloadedShops,
+                downloadedExperiences,
                 new CacheAllImagesInteractor.CacheAllImagesInteractorListener() {
 
                     @Override
                     public void onCacheAllImagesCompletion(int errors) {
                         pDialog.dismiss();
 
+                        // If some image failed, show a warning message but continue to the last step anyway
                         if ( errors > 0 ) {
-                            Log.e("MainActivity", errors +" Shop images could not be stored on local cache");
+                            Log.e("MainActivity", errors +" image(s) could not be stored on local cache");
 
                             String title = getString(R.string.warning);
-                            String msg = getString(R.string.downloadShopImages_warningMsg) + errors;
+                            String msg = ""+ errors +" "+ getString(R.string.cacheImages_warningMsg);
                             Utils.showMessage(MainActivity.this, msg, DIALOG, title);
-                            //return;
                         }
 
                         finishActivitySetup(true);
@@ -303,8 +375,9 @@ public class MainActivity extends AppCompatActivity {
                     .apply();
         }
 
-        // Finally, the user can click on the shops button
+        // Finally, the user can click on the activity buttons
         btnShops.setEnabled(true);
+        btnExperiences.setEnabled(true);
     }
 
 }

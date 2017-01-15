@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Madrid Guide</string>
-    <string name="error">ERROR</string>
-    <string name="warning">WARNING</string>
+    <string name="error">Error</string>
+    <string name="warning">Warning</string>
     <string name="activity_main_btn_shops_txt">View shops</string>
     <string name="activity_main_btn_experiences_txt">View activities</string>
     <string name="main_activity_menu_refresh_title">Update from server</string>
@@ -14,11 +14,14 @@
     <string name="refreshDialog_noWifiTitle">No Wi-Fi connection</string>
     <string name="refreshDialog_noWifiMsg">"Madrid Guide is about to download up-to-date information from the Internet (mobile data charges may apply).\n\nDo you want to proceed?"</string>
     <string name="discardLocalData_progressMsg">Discarding previous local data...</string>
-    <string name="downloadShops_progressMsg">Downloading shops from server...</string>
+    <string name="downloadShops_progressMsg">Downloading and caching shops from server...</string>
     <string name="downloadShops_errorMsg">Unable to download the shops data, please check your internet connection and try again.</string>
-    <string name="downloadShopImages_progressMsg">Downloading shop images...</string>
-    <string name="downloadShopImages_warningMsg">"Some shop images could not be cached properly. Error count: "</string>
-    <string name="cacheShops_errorMsg">Unable to store the shops data into the local cache, please try again.</string>
+    <string name="cacheShops_errorMsg">Failed to store the shops data into the local cache, please try again.</string>
+    <string name="downloadActivities_progressMsg">Downloading and caching activities from server...</string>
+    <string name="downloadActivities_errorMsg">Unable to download the activities data, please check your internet connection and try again.</string>
+    <string name="cacheActivities_errorMsg">Failed to store the activities data into the local cache, please try again.</string>
+    <string name="cacheImages_progressMsg">Downloading images...</string>
+    <string name="cacheImages_warningMsg">"image(s) could not be cached and will not show properly."</string>
 
     <string name="activity_shops_title">Madrid Guide - Shops</string>
     <string name="permission_location_rationale_title">"Access to device's location"</string>

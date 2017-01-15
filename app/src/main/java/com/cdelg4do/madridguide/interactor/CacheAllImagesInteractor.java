@@ -5,6 +5,8 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.cdelg4do.madridguide.manager.image.ImageCacheManager;
+import com.cdelg4do.madridguide.model.Experience;
+import com.cdelg4do.madridguide.model.Experiences;
 import com.cdelg4do.madridguide.model.Shop;
 import com.cdelg4do.madridguide.model.Shops;
 
@@ -25,7 +27,7 @@ import static com.cdelg4do.madridguide.interactor.CacheAllImagesInteractor.Statu
  */
 public class CacheAllImagesInteractor {
 
-    // Possible status for a url request
+    // Possible status for an image request
     enum Status {
         PENDING,
         SUCCESS,
@@ -38,6 +40,9 @@ public class CacheAllImagesInteractor {
         void onCacheAllImagesCompletion(int errors);
     }
 
+    // The queue of remote images to be cached
+    private Map<String,Status> jobQueue;
+
     /**
      * Stores all the shop images on the local cache.
      * First queues the download of all the images (parallel caching), then waits for all to finish.
@@ -46,92 +51,104 @@ public class CacheAllImagesInteractor {
      * @param shops     object that contains the data corresponding to the shop images.
      * @param listener  listener that will be called once the whole caching process is over.
      */
-    public void execute(final Context context, final @NonNull Shops shops, final @NonNull CacheAllImagesInteractorListener listener) {
+    public void execute(final Context context,
+                        final @NonNull Shops shops,
+                        final @NonNull Experiences experiences,
+                        final @NonNull CacheAllImagesInteractorListener listener) {
 
         if (listener == null)
             return;
 
+        // Populate the queue with all images that must be downloaded (initially, all jobs are pending)
+        jobQueue = new LinkedHashMap<>();
+
         if (shops != null) {
 
-            // Build a Map to keep track of each url status (in the beginning, all pending)
-            Map<String,Status> urlMap = new LinkedHashMap<>();
-
             for (Shop shop : shops.allElements()) {
-                urlMap.put(shop.getLogoImgUrl(), PENDING);
-                urlMap.put(shop.getImageUrl(), PENDING);
-                urlMap.put(shop.getMapUrl(), PENDING);
+                jobQueue.put(shop.getLogoImgUrl(), PENDING);
+                jobQueue.put(shop.getImageUrl(), PENDING);
+                jobQueue.put(shop.getMapUrl(), PENDING);
             }
-
-            // Start caching urls in the map, and wait for all to finish
-            asyncDownloadOfUrlMap(context, urlMap, listener);
         }
+
+        if (experiences != null) {
+
+            for (Experience experience : experiences.allElements()) {
+                jobQueue.put(experience.getLogoImgUrl(), PENDING);
+                jobQueue.put(experience.getImageUrl(), PENDING);
+                jobQueue.put(experience.getMapUrl(), PENDING);
+            }
+        }
+
+        // Start asynchronously caching images from the queue, and wait for all to finish
+        processJobQueue(context, listener);
     }
 
 
     // Auxiliary methods:
 
-    private void asyncDownloadOfUrlMap(final Context context, final @NonNull Map<String,Status> urlMap, final @NonNull CacheAllImagesInteractorListener listener) {
+    private void processJobQueue(final Context context, final @NonNull CacheAllImagesInteractorListener listener) {
 
-        if (urlMap == null)
+        if (jobQueue == null || jobQueue.size() == 0) {
+
+            listener.onCacheAllImagesCompletion(0);
             return;
+        }
 
-        // For each url: try to download & cache it, then check if there are more pending.
-        // If not, return control to the listener.
-        for (final Map.Entry<String,Status> entry: urlMap.entrySet()) {
+        ImageCacheManager imageMgr = ImageCacheManager.getInstance(context);
 
-            ImageCacheManager imageMgr = ImageCacheManager.getInstance(context);
-            String imageUrl = entry.getKey();
+        // Once a job finishes, check if it was the last one. If so, return control to the listener
+        for (final Map.Entry<String,Status> job: jobQueue.entrySet()) {
 
-            // No need to mess with main/background threads here, the ImageCacheManager does it all
+            String imageUrl = job.getKey();
+
             imageMgr.forceCacheOfRemoteImage(imageUrl, new ImageCacheManager.ImageCacheProcessListener() {
 
                 @Override
                 public void onImageCachingSuccess() {
-                    entry.setValue(SUCCESS);
+                    job.setValue(SUCCESS);
 
-                    if ( noMorePendingDownloads(urlMap) )
-                        listener.onCacheAllImagesCompletion( errorCount(urlMap) );
+                    if ( allJobsFinished() )
+                        listener.onCacheAllImagesCompletion( jobErrorCount() );
                 }
 
                 @Override
                 public void onImageCachingError() {
-                    entry.setValue(ERROR);
+                    job.setValue(ERROR);
 
-                    if ( noMorePendingDownloads(urlMap) )
-                        listener.onCacheAllImagesCompletion( errorCount(urlMap) );
+                    if ( allJobsFinished() )
+                        listener.onCacheAllImagesCompletion( jobErrorCount() );
                 }
             });
         }
     }
 
-    private boolean noMorePendingDownloads(Map<String,Status> urlMap) {
 
-        int pending = 0;
+    private boolean allJobsFinished() {
 
-        for (final Map.Entry<String,Status> entry: urlMap.entrySet()) {
+        boolean allFinished = true;
+        for (final Map.Entry<String,Status> job: jobQueue.entrySet()) {
 
-            if (entry.getValue() == PENDING) {
-                pending++;
+            if (job.getValue() == PENDING) {
+                allFinished = false;
                 break;
             }
         }
 
-        return pending == 0;
+        return allFinished;
     }
 
-    private int errorCount(Map<String,Status> urlMap) {
+
+    private int jobErrorCount() {
 
         int errors = 0;
+        for (final Map.Entry<String,Status> job: jobQueue.entrySet()) {
 
-        for (final Map.Entry<String,Status> entry: urlMap.entrySet()) {
-
-            if (entry.getValue() == ERROR) {
+            if (job.getValue() == ERROR) {
                 errors++;
             }
         }
 
         return errors;
     }
-
-
 }
