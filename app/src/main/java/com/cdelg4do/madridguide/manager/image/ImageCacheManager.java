@@ -5,7 +5,9 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.widget.ImageView;
 
+import com.jakewharton.picasso.OkHttp3Downloader;
 import com.squareup.picasso.Callback;
+import com.squareup.picasso.Downloader;
 import com.squareup.picasso.LruCache;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
@@ -14,6 +16,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.lang.ref.WeakReference;
 
+import static com.cdelg4do.madridguide.util.Constants.IMAGE_MANAGER_DISK_CACHE_SIZE_MB;
 import static com.squareup.picasso.NetworkPolicy.OFFLINE;
 
 
@@ -33,6 +36,7 @@ public class ImageCacheManager {
 
     private WeakReference<Context> context;
     private LruCache picassoCache;
+    private Downloader picassoDownloader;
 
 
     // The constructor is private, call getInstance to get a reference to the singleton
@@ -40,18 +44,23 @@ public class ImageCacheManager {
 
         this.context = new WeakReference<Context>(context);
 
-        // Modify the default Picasso instance
-        // This allows to keep a reference to cache used by Picasso
-        // (the default cache object is not visible outside Picasso's package)
+        // Setup a custom memory cache for Picasso, so that we can keep a reference to it
+        // (to be able to clean it later if necessary)
         picassoCache = new LruCache(context);
+
+        // Setup a custom downloader for Picasso, so that we can define an appropriate disk cache size
+        // (Picasso does not manage disk cache directly, lets the downloader to do it)
+        long diskCacheSizeBytes = IMAGE_MANAGER_DISK_CACHE_SIZE_MB * 1024 * 1024;
+        picassoDownloader = new OkHttp3Downloader(context, diskCacheSizeBytes);
+
+        // Configure a custom instance of Picasso, and set it as the default Picasso instance
         Picasso.Builder builder = new Picasso.Builder(context);
         builder.memoryCache(picassoCache);
-
-        // Future calls to Picasso will use our custom instance
+        builder.downloader(picassoDownloader);
         Picasso.setSingletonInstance(builder.build());
 
         // Picasso logging options
-        Picasso.with(context).setLoggingEnabled(true);
+        Picasso.with(context).setLoggingEnabled(false);
         Picasso.with(context).setIndicatorsEnabled(true);
     }
 
@@ -106,7 +115,7 @@ public class ImageCacheManager {
         Picasso.with(context.get())
                 .load(imageUrl)
                 .memoryPolicy(MemoryPolicy.NO_CACHE)     // Do not use the memory cache here
-                .networkPolicy(NetworkPolicy.NO_CACHE)   // Do not look for the image in the disk cache
+                .networkPolicy(NetworkPolicy.NO_CACHE)   // Do not look for the image in the disk
                 .fetch(new Callback() {
 
                     @Override

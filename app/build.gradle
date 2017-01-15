@@ -47,6 +47,10 @@ dependencies {
     // Picasso (to easily download and cache images)
     compile 'com.squareup.picasso:picasso:2.5.2'
 
+    // OkHttp3Downloader (downloader & disk cache for Picasso)
+    compile 'com.squareup.okhttp3:okhttp:3.3.0'
+    compile 'com.jakewharton.picasso:picasso2-okhttp3-downloader:1.0.2'
+
     // Butterknife (to easily bind views)
     compile 'com.jakewharton:butterknife:8.4.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.4.0'

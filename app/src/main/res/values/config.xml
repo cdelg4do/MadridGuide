@@ -1,5 +1,4 @@
 <resources>
     <string name="shops_url">http://madrid-shops.com/json/getShops.php</string>
-    <!-- <string name="shops_url">http://www.mocky.io/v2/587459990f0000872152e27f</string> <!- Test: 12 shops -->
     <string name="activities_url">http://madrid-shops.com/json_new/getActivities.php</string>
 </resources>

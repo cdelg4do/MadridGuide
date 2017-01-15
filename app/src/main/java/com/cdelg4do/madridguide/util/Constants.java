@@ -15,6 +15,8 @@ public class Constants {
     public static final String LANG_SPANISH = "es";
     public static final String LANG_DEFAULT = LANG_ENGLISH;
 
+    public static final int IMAGE_MANAGER_DISK_CACHE_SIZE_MB = 85;
+
     public static final String INTENT_KEY_DETAIL_SHOP = appName + ".INTENT_KEY_DETAIL_SHOP";
     public static final String INTENT_KEY_DETAIL_EXPERIENCE = appName + ".INTENT_KEY_DETAIL_EXPERIENCE";
 
