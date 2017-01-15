@@ -24,4 +24,8 @@
     <dimen name="marker_shop_height">50dp</dimen>
     <dimen name="marker_shop_width">50dp</dimen>
     <dimen name="marker_shop_margin">5dp</dimen>
+
+    <dimen name="marker_activity_height">50dp</dimen>
+    <dimen name="marker_activity_width">50dp</dimen>
+    <dimen name="marker_activity_margin">5dp</dimen>
 </resources>

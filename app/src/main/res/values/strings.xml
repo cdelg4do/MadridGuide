@@ -24,15 +24,22 @@
     <string name="cacheImages_warningMsg">"image(s) could not be cached and will not show properly."</string>
 
     <string name="activity_shops_title">Madrid Guide - Shops</string>
+    <string name="activity_shops_menu_search_title">Search shops</string>
+    <string name="activity_shops_showing_results_head">Showing</string>
+    <string name="activity_shops_showing_results_tail">shop(s)</string>
+    <string name="activity_shops_showing_results_none">No shops found for your query</string>
+
     <string name="permission_location_rationale_title">"Access to device's location"</string>
     <string name="permission_location_rationale_msg">"In order to show your current position on the map, Madrid Guide will ask you to grant access to this device's location."</string>
     <string name="permission_granted">Permission granted</string>
     <string name="permission_denied_location_title">"Permission denied"</string>
     <string name="permission_denied_location_msg">"Madrid Guide will not be able to show your position on the map."</string>
-    <string name="activity_shops_menu_search_title">Search shops</string>
-    <string name="activity_shops_showing_results_head">Showing</string>
-    <string name="activity_shops_showing_results_tail">shop(s)</string>
-    <string name="activity_shops_showing_results_none">No matches found for your query</string>
+
+    <string name="activity_experiences_title">Madrid Guide - Activities</string>
+    <string name="activity_experiences_menu_search_title">Search activities</string>
+    <string name="activity_experiences_showing_results_head">Showing</string>
+    <string name="activity_experiences_showing_results_tail">activities</string>
+    <string name="activity_experiences_showing_results_none">No activities found for your query</string>
 
     <string name="activity_shop_detail_title">Madrid Guide - Shop detail</string>
     <string name="activity_shop_detail_url_label_txt">"Web site:"</string>

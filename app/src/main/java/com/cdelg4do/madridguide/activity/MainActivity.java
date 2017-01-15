@@ -128,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         btnExperiences.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                Navigator.navigateFromMainActivityToExperiencesActivity(MainActivity.this);
             }
         });
     }
