@@ -23,6 +23,7 @@ import com.cdelg4do.madridguide.adapter.ExperienceInfoWindowAdapter;
 import com.cdelg4do.madridguide.fragment.ExperienceListFragment;
 import com.cdelg4do.madridguide.model.Experience;
 import com.cdelg4do.madridguide.model.Experiences;
+import com.cdelg4do.madridguide.navigator.Navigator;
 import com.cdelg4do.madridguide.util.Utils;
 import com.cdelg4do.madridguide.view.OnElementClickedListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -99,7 +100,7 @@ public class ExperiencesActivity extends AppCompatActivity implements LoaderCall
         experienceListFragment.setOnElementClickedListener(new OnElementClickedListener<Experience>() {
             @Override
             public void onElementClicked(Experience experience, int position) {
-                //Navigator.navigateFromExperiencesActivityToExperienceDetailActivity(ExperiencesActivity.this, experience);
+                Navigator.navigateFromExperiencesActivityToExperienceDetailActivity(ExperiencesActivity.this, experience);
             }
         });
 
@@ -268,7 +269,7 @@ public class ExperiencesActivity extends AppCompatActivity implements LoaderCall
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Experience experience = (Experience) marker.getTag();
-                //Navigator.navigateFromExperiencesActivityToExperienceDetailActivity(ExperiencesActivity.this, experience);
+                Navigator.navigateFromExperiencesActivityToExperienceDetailActivity(ExperiencesActivity.this, experience);
             }
         });
 

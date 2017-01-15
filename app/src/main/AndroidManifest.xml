@@ -58,6 +58,8 @@
 
         <activity android:name=".activity.ExperiencesActivity">
         </activity>
+        <activity android:name=".activity.ExperienceDetailActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -16,6 +16,7 @@ public class Constants {
     public static final String LANG_DEFAULT = LANG_ENGLISH;
 
     public static final String INTENT_KEY_DETAIL_SHOP = appName + ".INTENT_KEY_DETAIL_SHOP";
+    public static final String INTENT_KEY_DETAIL_EXPERIENCE = appName + ".INTENT_KEY_DETAIL_EXPERIENCE";
 
     public static final String PREFS_CACHE_DATE_KEY = "CACHE_DATE";
     public static final int CACHE_MAX_DAYS_LIMIT = 7;

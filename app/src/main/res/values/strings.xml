@@ -48,4 +48,12 @@
     <string name="activity_shop_detail_map_button_txt_off">Show map</string>
     <string name="activity_shop_detail_map_button_txt_on">Hide map</string>
     <string name="activity_shop_detail_description_label_txt">Description:</string>
+
+    <string name="activity_experience_detail_title">Madrid Guide - Activity detail</string>
+    <string name="activity_experience_detail_url_label_txt">"Web site:"</string>
+    <string name="activity_experience_detail_openingHours_label_txt">"Opening hours:"</string>
+    <string name="activity_experience_detail_address_label_txt">"Address:"</string>
+    <string name="activity_experience_detail_map_button_txt_off">Show map</string>
+    <string name="activity_experience_detail_map_button_txt_on">Hide map</string>
+    <string name="activity_experience_detail_description_label_txt">Description:</string>
 </resources>
