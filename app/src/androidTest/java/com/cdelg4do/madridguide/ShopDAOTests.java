@@ -88,22 +88,6 @@ public class ShopDAOTests extends AndroidTestCase {
         assertTrue(sut.size() == count+3);
     }
 
-/*
-    public void testQueryFilterShops() {
-
-        final ShopDAO dao = new ShopDAO( getContext() );
-
-        final String queryString = "PiNtUrA";
-
-        Cursor c = dao.queryCursor(queryString);
-
-        assertNotNull(c);
-
-        Shops shops = Shops.buildShopsFromCursor(c);
-
-        assertEquals(shops.size(), 2);
-    }
-*/
 
     // Auxiliary methods:
 
