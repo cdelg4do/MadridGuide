@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/row_shop_height"
+                tools:background="@android:color/white">
+
+    <ImageView
+        android:id="@+id/row_shop_background_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:background="@android:color/white"
+        android:alpha="0.80"
+        android:scaleType="centerCrop"
+        tools:src="@drawable/default_placeholder"/>
+
+    <FrameLayout
+        android:id="@+id/row_shop_horizontal_band"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/row_shop_name_height"
+        android:layout_centerVertical="true"
+        android:background="@android:color/white"
+        android:alpha="0.80"/>
+
+    <ImageView
+        android:id="@+id/row_shop_logo"
+        android:layout_width="@dimen/row_shop_logo_width"
+        android:layout_height="@dimen/row_shop_logo_height"
+        android:layout_centerVertical="true"
+        android:layout_margin="@dimen/row_shop_logo_margin_left"
+        android:background="@android:color/white"
+        tools:src="@drawable/default_placeholder"
+        />
+
+    <TextView
+        android:id="@+id/row_shop_name"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/row_shop_name_height"
+        android:layout_toEndOf="@+id/row_shop_logo"
+        android:layout_toRightOf="@+id/row_shop_logo"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/row_shop_name_padding"
+        android:textColor="@android:color/black"
+        android:textStyle="normal|bold"
+        android:textSize="18sp"
+        android:gravity="center_vertical|center_horizontal"
+        tools:text="Ejemplo de nombre de tienda un poco largo"/>
+
+</RelativeLayout>

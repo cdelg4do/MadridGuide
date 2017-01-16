@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              xmlns:tools="http://schemas.android.com/tools">
+
+    <RelativeLayout android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/marker_activity_logo"
+            android:layout_width="@dimen/marker_activity_width"
+            android:layout_height="@dimen/marker_activity_height"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/marker_activity_margin"
+            tools:src="@drawable/default_placeholder"/>
+
+        <TextView
+            android:id="@+id/marker_activity_name"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/marker_activity_height"
+            android:layout_toRightOf="@+id/marker_activity_logo"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/marker_activity_margin"
+            android:textColor="@android:color/black"
+            android:textStyle="normal|bold"
+            android:textSize="16sp"
+            android:gravity="center_vertical|center_horizontal"
+            tools:text="Ejemplo de nombre de actividad un poco largo"/>
+
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_shop_detail"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.cdelg4do.madridguide.activity.ShopDetailActivity">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:isScrollContainer="true"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:id="@+id/scrollView">
+
+            <LinearLayout
+                android:id="@+id/contentOfScrollView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:id="@+id/activity_shop_detail_header_layout"
+                    xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/row_shop_height"
+                    tools:background="@android:color/white">
+
+                    <ImageView
+                        android:id="@+id/activity_shop_detail_shop_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/white"
+                        android:alpha="0.80"
+                        android:scaleType="centerCrop"
+                        tools:src="@drawable/default_placeholder"/>
+
+                    <FrameLayout
+                        android:id="@+id/row_shop_horizontal_band"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/row_shop_name_height"
+                        android:layout_centerVertical="true"
+                        android:background="@android:color/white"
+                        android:alpha="0.80"/>
+
+                    <ImageView
+                        android:id="@+id/activity_shop_detail_logo_image"
+                        android:layout_width="@dimen/row_shop_logo_width"
+                        android:layout_height="@dimen/row_shop_logo_height"
+                        android:layout_centerVertical="true"
+                        android:layout_margin="@dimen/row_shop_logo_margin_left"
+                        android:background="@android:color/white"
+                        tools:src="@drawable/default_placeholder"/>
+
+                    <TextView
+                        android:id="@+id/activity_shop_detail_shop_name_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/row_shop_name_height"
+                        android:layout_toEndOf="@+id/activity_shop_detail_logo_image"
+                        android:layout_toRightOf="@+id/activity_shop_detail_logo_image"
+                        android:layout_centerVertical="true"
+                        android:padding="@dimen/row_shop_name_padding"
+                        android:textColor="@android:color/black"
+                        android:textStyle="normal|bold"
+                        android:textSize="18sp"
+                        android:gravity="center_vertical|center_horizontal"
+                        tools:text="Ejemplo de nombre de tienda un poco largo"/>
+
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_shop_detail_url_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/activity_shop_detail_url_label"
+                        android:text="@string/activity_shop_detail_url_label_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textStyle="normal|bold"/>
+
+                    <TextView
+                        android:id="@+id/activity_shop_detail_url_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:typeface="monospace"
+                        android:textStyle="normal|bold"
+                        android:textColor="@android:color/holo_blue_dark"
+                        android:gravity="right"
+                        android:autoLink="web"
+                        tools:text="http://www.google.com"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_shop_detail_openingHours_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/activity_shop_detail_openingHours_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/activity_shop_detail_openingHours_label_txt"
+                        android:textSize="18sp"
+                        android:textStyle="normal|bold"/>
+
+                    <TextView
+                        android:id="@+id/activity_shop_detail_openingHours_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        tools:text="Monday to Friday 09:30 - 17:00"
+                        android:gravity="right"
+                        android:textSize="16sp"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_shop_detail_address_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/activity_shop_detail_address_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/activity_shop_detail_address_label_txt"
+                        android:textSize="18sp"
+                        android:textStyle="normal|bold"/>
+
+                    <TextView
+                        android:id="@+id/activity_shop_detail_address_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        tools:text="Calle de Claudio Coello, 46, 28001 Madrid"/>
+
+                    <ToggleButton
+                        android:id="@+id/activity_shop_detail_map_button"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right"
+                        android:textOff="@string/activity_shop_detail_map_button_txt_off"
+                        android:textOn="@string/activity_shop_detail_map_button_txt_on"
+                        android:checked="false"/>
+
+                    <FrameLayout
+                        android:id="@+id/activity_shop_detail_map_frame"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        tools:visibility="visible">
+
+                        <ImageView
+                            android:id="@+id/activity_shop_detail_map_image"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            tools:src="@drawable/default_placeholder"
+                            android:layout_margin="10dp"/>
+
+                    </FrameLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/activity_shop_detail_description_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/activity_shop_detail_description_label"
+                        android:text="@string/activity_shop_detail_description_label_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="18sp"
+                        android:textStyle="normal|bold"/>
+
+                    <TextView
+                        android:id="@+id/activity_shop_detail_description_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        tools:text="The creator Adolfo Dominguez store in Madrid’s luxury mile, can be considered as a sanctuary of fashion, occupying an entire building and is the largest designer store. We dare to say that you will find the complete collection for women and men, an exclusive section for brides dream decoration items and  an unusual corner of garments for your pets.  On the top floor is the exclusive cafe, where you can relax and muse over your day of shopping.\r\n \r\n"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </ScrollView>
+
+    </RelativeLayout>
+
+</LinearLayout>
