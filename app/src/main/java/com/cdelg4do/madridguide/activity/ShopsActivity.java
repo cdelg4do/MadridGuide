@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,6 +40,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -55,12 +57,18 @@ import static com.cdelg4do.madridguide.util.Utils.MessageType.TOAST;
 
 
 /**
- * This class represents the screen showing the shop list.
+ * This class represents the screen showing the shop map and the shop list.
  * Implements the LoaderManager.LoaderCallbacks interface to load data from a content resolver.
  */
 public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    private static final String SAVED_STATE_SHOP_LIST_KEY = "SAVED_STATE_SHOP_LIST_KEY";
+    private static final String SAVED_STATE_MAP_LATITUDE_KEY = "SAVED_STATE_MAP_LATITUDE_KEY";
+    private static final String SAVED_STATE_MAP_LONGITUDE_KEY = "SAVED_STATE_MAP_LONGITUDE_KEY";
+    private static final String SAVED_STATE_MAP_ZOOM_KEY = "SAVED_STATE_MAP_ZOOM_KEY";
+
     private static final int REQUEST_CODE_ASK_FOR_LOCATION_PERMISSION = 123;
+
     private static final int ID_SHOPS_LOADER = 0;
     private static final String SHOPS_LOADER_SELECTION_KEY = "SHOPS_LOADER_SELECTION_KEY";
     private static final String SHOPS_LOADER_SELECTION_ARGS_KEY = "SHOPS_LOADER_SELECTION_ARGS_KEY";
@@ -71,31 +79,20 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
     private GoogleMap map;
     private ArrayList<Marker> currentMapMarkers;
 
+    private Shops currentShops; // a reference to the shops currently shown, at any moment
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shops);
 
         setTitle(R.string.activity_shops_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Get the map fragment
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_shops_fragment_map);
-
-        // Get a reference to the map (is an async call, so configure the map only after it is received)
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                map = googleMap;
-                setupMap();
-            }
-        });
-
-        // Get the shop list fragment
+        // Get the shop list fragment and set a listener to use when a row is selected
         shopListFragment = (ShopListFragment) getSupportFragmentManager().findFragmentById(R.id.activity_shops_fragment_shops);
 
-        // Add a listener to the fragment (to navigate to the Detail activity when a row is clicked)
         shopListFragment.setOnElementClickedListener(new OnElementClickedListener<Shop>() {
             @Override
             public void onElementClicked(Shop shop, int position) {
@@ -103,15 +100,71 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        // Get the map fragment and a reference to the map object (this last needs an async call),
+        // then configure the map and finish the Activity's setup
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_shops_fragment_map);
 
-        // Initialize a loader to load all shops from the local cache (database).
-        // (first argument of initLoader() is the id for the new loader, if the activity
-        // is going to have several loaders, a different id for each one must be used)
-        //
-        // The loader's properties are defined in onCreateLoader()
-        // Binding the returned data to the Activity views is done in onLoadFinished()
-        LoaderManager loaderManager = getSupportLoaderManager();
-        loaderManager.initLoader(ID_SHOPS_LOADER, null, this);
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                setupMap();
+
+                // If the activity is being restored (for example after an orientation change),
+                // get back to the previous state
+                if (savedInstanceState != null) {
+                    restoreActivityState(savedInstanceState);
+                }
+
+                // If the activity is "new", initialize a CursorLoader to get all existing Shops
+                else {
+                    LoaderManager loaderManager = getSupportLoaderManager();
+                    loaderManager.initLoader(ID_SHOPS_LOADER, null, ShopsActivity.this);
+                }
+            }
+        });
+    }
+
+
+    // In case of need, we just have to save the shops currently shown and the current map position
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        Log.d("ShopsActivity","Saving activity state...");
+
+        LinkedList<Shop> shopList = (LinkedList<Shop>) currentShops.allElements();
+        double lat = map.getCameraPosition().target.latitude;
+        double lon = map.getCameraPosition().target.longitude;
+        Float zoom = map.getCameraPosition().zoom;
+
+        outState.putSerializable(SAVED_STATE_SHOP_LIST_KEY, shopList);
+        outState.putDouble(SAVED_STATE_MAP_LATITUDE_KEY, lat);
+        outState.putDouble(SAVED_STATE_MAP_LONGITUDE_KEY, lon);
+        outState.putFloat(SAVED_STATE_MAP_ZOOM_KEY, zoom);
+
+        super.onSaveInstanceState(outState);
+    }
+
+
+    // Get the shops and the map position that were showing before destroying the activity,
+    // and then paint it all like it was before
+    private void restoreActivityState(final @NonNull Bundle savedInstanceState) {
+
+        Log.d("ShopsActivity","Restoring activity state...");
+
+        List<Shop> shopList = (List) savedInstanceState.getSerializable(SAVED_STATE_SHOP_LIST_KEY);
+        double lat = savedInstanceState.getDouble(SAVED_STATE_MAP_LATITUDE_KEY, INITIAL_MAP_LATITUDE);
+        double lon = savedInstanceState.getDouble(SAVED_STATE_MAP_LONGITUDE_KEY, INITIAL_MAP_LONGITUDE);
+        float zoom = savedInstanceState.getFloat(SAVED_STATE_MAP_ZOOM_KEY, INITIAL_MAP_ZOOM);
+
+        currentShops = Shops.buildShopsFromList(shopList);
+        map.animateCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lat,lon), zoom) );
+
+        if (shopList.size() == 0)
+            return;
+
+        addShopMarkersToMap(currentShops);
+        shopListFragment.setShopsAndUpdateFragmentUI(currentShops);
     }
 
 
@@ -221,15 +274,17 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
 
             case ID_SHOPS_LOADER:
 
-                // Create a new Shops object from the returned data, and update the UI with it
-                final Shops shops = Shops.buildShopsFromCursor(data);
-                if (shops.size() > 0) {
+                // Create a new Shops object from the returned data, keep a reference to it
+                // (in case we need to restore the activity), and update the UI with it
+                currentShops = Shops.buildShopsFromCursor(data);
+
+                if (currentShops.size() > 0) {
                     String msgHead = getString(R.string.activity_shops_showing_results_head);
                     String msgTail = getString(R.string.activity_shops_showing_results_tail);
-                    Utils.showMessage(this, msgHead +" "+ shops.size() +" "+ msgTail, TOAST, null);
+                    Utils.showMessage(this, msgHead +" "+ currentShops.size() +" "+ msgTail, TOAST, null);
 
-                    shopListFragment.setShopsAndUpdateFragmentUI(shops);
-                    addShopMarkersToMap(shops);
+                    shopListFragment.setShopsAndUpdateFragmentUI(currentShops);
+                    addShopMarkersToMap(currentShops);
                 }
                 else {
                     String msg = getString(R.string.activity_shops_showing_results_none);
@@ -367,8 +422,8 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
                 marker.remove();
         }
 
-        Shops emptyShops = Shops.buildShopsEmpty();
-        shopListFragment.setShopsAndUpdateFragmentUI(emptyShops);
+        currentShops = Shops.buildShopsEmpty();
+        shopListFragment.setShopsAndUpdateFragmentUI(currentShops);
     }
 
 
