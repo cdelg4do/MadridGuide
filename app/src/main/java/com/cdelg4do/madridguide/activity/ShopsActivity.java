@@ -52,6 +52,8 @@ import static com.cdelg4do.madridguide.manager.db.DBConstants.KEY_SHOP_NAME;
 import static com.cdelg4do.madridguide.util.Constants.INITIAL_MAP_LATITUDE;
 import static com.cdelg4do.madridguide.util.Constants.INITIAL_MAP_LONGITUDE;
 import static com.cdelg4do.madridguide.util.Constants.INITIAL_MAP_ZOOM;
+import static com.cdelg4do.madridguide.util.Constants.LANG_DEFAULT;
+import static com.cdelg4do.madridguide.util.Constants.LANG_SPANISH;
 import static com.cdelg4do.madridguide.util.Utils.MessageType.DIALOG;
 import static com.cdelg4do.madridguide.util.Utils.MessageType.TOAST;
 
@@ -478,8 +480,8 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
 
-    // Start a new query filtering by all shops that contain a given string
-    // in any of these fields: name, description (EN/ES) and address.
+    // Start a new query filtering by all shops that contain a given string in any of these fields:
+    // name, description (in the appropriate language) and address.
     // (if it is the empty string, then no filter will apply)
     private void queryShopsByString(@NonNull String queryString) {
 
@@ -491,12 +493,10 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
 
             String selection =
                     KEY_SHOP_NAME +" LIKE ? OR "+
-                    KEY_SHOP_DESCRIPTION_EN +" LIKE ? OR "+
-                    KEY_SHOP_DESCRIPTION_ES +" LIKE ? OR "+
+                    getDescriptionColumnNameForCurrentLang() +" LIKE ? OR "+
                     KEY_SHOP_ADDRESS + " LIKE ?";
 
             String[] selectionArgs = new String[] {
-                    "%"+ queryString +"%",
                     "%"+ queryString +"%",
                     "%"+ queryString +"%",
                     "%"+ queryString +"%"
@@ -510,5 +510,18 @@ public class ShopsActivity extends AppCompatActivity implements LoaderCallbacks<
         // Restart the loader with the new arguments
         LoaderManager loaderManager = getSupportLoaderManager();
         loaderManager.restartLoader(ID_SHOPS_LOADER, args, this);
+    }
+
+
+    // Determines what localized description column should be searched in the database
+    private @NonNull String getDescriptionColumnNameForCurrentLang() {
+
+        String currentLanguage =  Utils.systemLanguage().equals("es") ? LANG_SPANISH : LANG_DEFAULT;
+
+        if ( currentLanguage == LANG_SPANISH)
+            return KEY_SHOP_DESCRIPTION_ES;
+
+        else
+            return KEY_SHOP_DESCRIPTION_EN;
     }
 }
