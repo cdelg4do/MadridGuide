@@ -134,7 +134,7 @@ public class ImageCacheManager {
 
     /**
      * Asynchronously loads a previously cached image into an ImageView, then calls a listener.
-     * NOTE: if the requested image is not cached, it will NOT look for it remotely.
+     * NOTE: if the requested image is not cached, it will NOT look for it on the Internet.
      *
      * @param target        the ImageView to load the image on.
      * @param imageUrl      the url of the image to be shown.
@@ -148,8 +148,7 @@ public class ImageCacheManager {
         Picasso.with(context.get())
                 .load(imageUrl)
                 .placeholder(placeholderId)
-                //.memoryPolicy(MemoryPolicy.NO_CACHE)
-                .networkPolicy(OFFLINE)
+                .networkPolicy(OFFLINE)     // Do not look for the image on the Internet
                 .error(brokenImageId)
                 .into(target, new Callback() {
 
@@ -161,7 +160,6 @@ public class ImageCacheManager {
                             listener.onSuccess();
                     }
 
-                    // If the image was not cached then try again, now downloading it
                     @Override
                     public void onError() {
 
@@ -169,32 +167,6 @@ public class ImageCacheManager {
 
                         if (listener != null)
                             listener.onError();
-
-                        /*
-                        Picasso.with(context.get())
-                                .load(imageUrl)
-                                //.memoryPolicy(MemoryPolicy.NO_CACHE)
-                                .networkPolicy(NetworkPolicy.NO_CACHE)
-                                .error(brokenImageId)
-                                .into(target, new Callback() {
-
-                                    @Override
-                                    public void onSuccess() {
-                                        Log.d("ImageCacheManager", "Successfully downloaded & cached image from " + imageUrl);
-
-                                        if (listener != null)
-                                            listener.onSuccess();
-                                    }
-
-                                    @Override
-                                    public void onError() {
-                                        Log.e("ImageCacheManager", "Unable to download image from " + imageUrl);
-
-                                        if (listener != null)
-                                            listener.onError();
-                                    }
-                                });
-                        */
                     }
                 });
     }

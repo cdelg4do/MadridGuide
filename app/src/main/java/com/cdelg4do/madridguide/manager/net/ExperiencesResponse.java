@@ -14,7 +14,7 @@ public class ExperiencesResponse {
     @SerializedName("result") private List<ExperienceEntity> result;
 
     /**
-     * This class represents a JSON shop given by a Shops Request.
+     * This class represents a JSON activity given by an Activities Request.
      */
     public class ExperienceEntity {
 

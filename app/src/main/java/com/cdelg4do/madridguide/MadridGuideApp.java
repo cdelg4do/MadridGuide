@@ -15,17 +15,13 @@ public class MadridGuideApp extends Application {
     // (see http://bit.ly/6LRzfx)
     private static WeakReference<Context> appContext;
 
-    // Entry point of the app
+    // Entry point of the app (app's initial settings can be done here)
     @Override
     public void onCreate() {
         super.onCreate();
 
         // Keep a copy of the application context
         appContext = new WeakReference<Context>( getApplicationContext() );
-
-        // Settings for Picasso
-        //Picasso.with(appContext.get()).setLoggingEnabled(true);
-        //Picasso.with(appContext.get()).setIndicatorsEnabled(true);
     }
 
     // Override to warn about memory warnings

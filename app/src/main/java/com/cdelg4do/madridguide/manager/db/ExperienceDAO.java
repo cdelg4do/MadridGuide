@@ -29,12 +29,24 @@ public class ExperienceDAO implements DAOPersistable<Experience> {
     private SQLiteDatabase db;
 
 
+    /**
+     * Public constructor.
+     *
+     * @param context   a context for the manager operations.
+     * @param dbManager a DBManager previously initialized (useful for testing).
+     */
     public ExperienceDAO(Context context, DBManager dbManager) {
         this.context = new WeakReference<Context>(context);
         this.dbManager = dbManager;
         this.db = dbManager.getDB();
     }
 
+
+    /**
+     * Public constructor.
+     *
+     * @param context   a context for the manager operations.
+     */
     public ExperienceDAO(Context context) {
         this(context, DBManager.getInstance(context) );
     }

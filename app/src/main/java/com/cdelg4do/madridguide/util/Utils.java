@@ -72,6 +72,7 @@ public abstract class Utils {
     }
 
 
+    // Shows the user a dialog with Cancel/Accept buttons, and the corresponding closures for both buttons
     public static void showCancelAcceptDialog(Context ctx, String title, String msg, OnClickListener cancelListener, OnClickListener acceptListener) {
 
         if (acceptListener == null)
@@ -99,6 +100,7 @@ public abstract class Utils {
     }
 
 
+    // Shows the user a dialog with Accept button only, and the corresponding closure
     public static void showAcceptDialog(Context ctx, String title, String msg, OnClickListener acceptListener) {
 
         if (acceptListener == null)
@@ -118,6 +120,7 @@ public abstract class Utils {
     }
 
 
+    // Returns a new indeterminate, non-cancelable progress dialog with a given message and title
     public static ProgressDialog newProgressDialog(Context ctx, String msg) {
 
         final ProgressDialog pDialog = new ProgressDialog(ctx);
@@ -129,9 +132,9 @@ public abstract class Utils {
         return pDialog;
     }
 
-
+    // Determines the language code ("en", "es", etc.) for the current system language
     public static String systemLanguage()
     {
-        return Locale.getDefault().getLanguage();   // "en", "es", etc...
+        return Locale.getDefault().getLanguage();
     }
 }

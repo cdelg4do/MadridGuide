@@ -6,19 +6,18 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
-import com.cdelg4do.madridguide.manager.db.ExperienceDAO;
-import com.cdelg4do.madridguide.manager.db.ShopDAO;
 import com.cdelg4do.madridguide.manager.image.ImageCacheManager;
 import com.cdelg4do.madridguide.util.MainThread;
 
 import java.util.concurrent.TimeUnit;
 
+import static com.cdelg4do.madridguide.manager.db.DBManager.DATABASE_FILE_NAME;
 import static com.cdelg4do.madridguide.util.Constants.PREFS_CACHE_DATE_KEY;
 
 /**
  * This class is an interactor in charge of:
  *
- * - First (in background): deleting the local cache.
+ * - First (in background): deleting the local cache (database and images)
  *
  * - Second (in the main thread): return control to the received DeleteLocalCacheInteractorListener.
  */
@@ -53,13 +52,8 @@ public class DeleteLocalCacheInteractor {
                 removeLastRefreshDate(context);
                 Log.d("DeleteLocalCache","Deleted last refresh date from preferences");
 
-                ShopDAO shopDAO = new ShopDAO(context);
-                int deleteCount = shopDAO.deleteAll();
-                Log.d("DeleteLocalCache","Deleted "+ deleteCount +" shop(s)");
-
-                ExperienceDAO experienceDAO = new ExperienceDAO(context);
-                deleteCount = experienceDAO.deleteAll();
-                Log.d("DeleteLocalCache","Deleted "+ deleteCount +" experience(s)");
+                context.deleteDatabase(DATABASE_FILE_NAME);
+                Log.d("DeleteLocalCache","Deleted database "+ DATABASE_FILE_NAME);
 
                 ImageCacheManager.getInstance(context).clearCache();
                 Log.d("DeleteLocalCache","Deleted local images cache");

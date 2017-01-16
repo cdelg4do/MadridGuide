@@ -10,7 +10,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.cdelg4do.madridguide.R;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -20,10 +19,12 @@ import java.lang.ref.WeakReference;
 import java.util.List;
 
 import static android.content.Context.CONNECTIVITY_SERVICE;
+import static com.cdelg4do.madridguide.util.Constants.ACTIVITIES_SERVER_URL;
+import static com.cdelg4do.madridguide.util.Constants.SHOPS_SERVER_URL;
 
 
 /**
- * This class manages the network data download.
+ * This class manages the network data connections.
  */
 public class NetworkManager {
 
@@ -59,7 +60,7 @@ public class NetworkManager {
             return;
 
         RequestQueue queue = Volley.newRequestQueue( context.get() );
-        String requestUrl = context.get().getString(R.string.shops_url);
+        String requestUrl = SHOPS_SERVER_URL;
 
         StringRequest shopsRequest = new StringRequest(
 
@@ -92,7 +93,7 @@ public class NetworkManager {
             return;
 
         RequestQueue queue = Volley.newRequestQueue( context.get() );
-        String requestUrl = context.get().getString(R.string.activities_url);
+        String requestUrl = ACTIVITIES_SERVER_URL;
 
         StringRequest activitiesRequest = new StringRequest(
 

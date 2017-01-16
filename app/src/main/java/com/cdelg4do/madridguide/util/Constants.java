@@ -4,10 +4,13 @@ import com.cdelg4do.madridguide.MadridGuideApp;
 import com.cdelg4do.madridguide.R;
 
 /**
- * This class contains static constants not shown to the final user (for logging, debug, etc).
+ * This class contains static constants not shown to the final user.
  */
 public class Constants {
     public static final String appName = "com.cdelg4do.madridguide";
+
+    public static final String SHOPS_SERVER_URL = "http://madrid-shops.com/json/getShops.php";
+    public static final String ACTIVITIES_SERVER_URL = "http://madrid-shops.com/json_new/getActivities.php";
 
     public static final String GOOGLE_MAPS_API_KEY = MadridGuideApp.getAppContext().getString(R.string.google_maps_api_key);
 
