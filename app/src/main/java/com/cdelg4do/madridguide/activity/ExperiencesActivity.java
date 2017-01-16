@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -37,6 +38,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -55,12 +57,18 @@ import static com.cdelg4do.madridguide.util.Utils.MessageType.TOAST;
 
 
 /**
- * This class represents the screen showing the activity list.
+ * This class represents the screen showing the activity map and the activity list.
  * Implements the LoaderManager.LoaderCallbacks interface to load data from a content resolver.
  */
 public class ExperiencesActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
+    private static final String SAVED_STATE_EXPERIENCE_LIST_KEY = "SAVED_STATE_EXPERIENCE_LIST_KEY";
+    private static final String SAVED_STATE_MAP_LATITUDE_KEY = "SAVED_STATE_MAP_LATITUDE_KEY";
+    private static final String SAVED_STATE_MAP_LONGITUDE_KEY = "SAVED_STATE_MAP_LONGITUDE_KEY";
+    private static final String SAVED_STATE_MAP_ZOOM_KEY = "SAVED_STATE_MAP_ZOOM_KEY";
+
     private static final int REQUEST_CODE_ASK_FOR_LOCATION_PERMISSION = 123;
+
     private static final int ID_EXPERIENCES_LOADER = 0;
     private static final String EXPERIENCES_LOADER_SELECTION_KEY = "EXPERIENCES_LOADER_SELECTION_KEY";
     private static final String EXPERIENCES_LOADER_SELECTION_ARGS_KEY = "EXPERIENCES_LOADER_SELECTION_ARGS_KEY";
@@ -71,32 +79,21 @@ public class ExperiencesActivity extends AppCompatActivity implements LoaderCall
     private GoogleMap map;
     private ArrayList<Marker> currentMapMarkers;
 
+    private Experiences currentExperiences; // a reference to the experiences currently shown, at any moment
+
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_experiences);
 
         setTitle(R.string.activity_experiences_title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        // Get the map fragment
-        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_experiences_fragment_map);
-
-        // Get a reference to the map (is an async call, so configure the map only after it is received)
-        mapFragment.getMapAsync(new OnMapReadyCallback() {
-            @Override
-            public void onMapReady(GoogleMap googleMap) {
-                map = googleMap;
-                setupMap();
-            }
-        });
-
-        // Get the experience list fragment
+        // Get the experience list fragment and set a listener to use when a row is selected
         experienceListFragment = (ExperienceListFragment) getSupportFragmentManager().
                 findFragmentById(R.id.activity_experiences_fragment_experiences);
 
-        // Add a listener to the fragment (to navigate to the Detail activity when a row is clicked)
         experienceListFragment.setOnElementClickedListener(new OnElementClickedListener<Experience>() {
             @Override
             public void onElementClicked(Experience experience, int position) {
@@ -104,10 +101,71 @@ public class ExperiencesActivity extends AppCompatActivity implements LoaderCall
             }
         });
 
+        // Get the map fragment and a reference to the map object (this last needs an async call),
+        // then configure the map and finish the Activity's setup
+        mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_experiences_fragment_map);
 
-        // Initialize a loader to load all experiences from the local cache (database).
-        LoaderManager loaderManager = getSupportLoaderManager();
-        loaderManager.initLoader(ID_EXPERIENCES_LOADER, null, this);
+        mapFragment.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                map = googleMap;
+                setupMap();
+
+                // If the activity is being restored (for example after an orientation change),
+                // get back to the previous state
+                if (savedInstanceState != null) {
+                    restoreActivityState(savedInstanceState);
+                }
+
+                // If the activity is "new", initialize a CursorLoader to get all existing Experiences
+                else {
+                    LoaderManager loaderManager = getSupportLoaderManager();
+                    loaderManager.initLoader(ID_EXPERIENCES_LOADER, null, ExperiencesActivity.this);
+                }
+            }
+        });
+    }
+
+
+    // In case of need, we have to save the experiences currently shown and the current map position
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+
+        Log.d("ExperiencesActivity","Saving activity state...");
+
+        LinkedList<Experience> experienceList = (LinkedList<Experience>) currentExperiences.allElements();
+        double lat = map.getCameraPosition().target.latitude;
+        double lon = map.getCameraPosition().target.longitude;
+        Float zoom = map.getCameraPosition().zoom;
+
+        outState.putSerializable(SAVED_STATE_EXPERIENCE_LIST_KEY, experienceList);
+        outState.putDouble(SAVED_STATE_MAP_LATITUDE_KEY, lat);
+        outState.putDouble(SAVED_STATE_MAP_LONGITUDE_KEY, lon);
+        outState.putFloat(SAVED_STATE_MAP_ZOOM_KEY, zoom);
+
+        super.onSaveInstanceState(outState);
+    }
+
+
+    // Get the experiences and the map position that were showing before destroying the activity,
+    // and then paint it all like it was before
+    private void restoreActivityState(final @NonNull Bundle savedInstanceState) {
+
+        Log.d("ExperiencesActivity","Restoring activity state...");
+
+        List<Experience> experienceList = (List) savedInstanceState.getSerializable(SAVED_STATE_EXPERIENCE_LIST_KEY);
+        double lat = savedInstanceState.getDouble(SAVED_STATE_MAP_LATITUDE_KEY, INITIAL_MAP_LATITUDE);
+        double lon = savedInstanceState.getDouble(SAVED_STATE_MAP_LONGITUDE_KEY, INITIAL_MAP_LONGITUDE);
+        float zoom = savedInstanceState.getFloat(SAVED_STATE_MAP_ZOOM_KEY, INITIAL_MAP_ZOOM);
+
+        currentExperiences = Experiences.buildExperiencesFromList(experienceList);
+        map.animateCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(lat,lon), zoom) );
+
+        if (experienceList.size() == 0)
+            return;
+
+        addExperienceMarkersToMap(currentExperiences);
+        experienceListFragment.setExperiencesAndUpdateFragmentUI(currentExperiences);
     }
 
 
@@ -217,15 +275,16 @@ public class ExperiencesActivity extends AppCompatActivity implements LoaderCall
 
             case ID_EXPERIENCES_LOADER:
 
-                // Create a new Experiences object from the returned data, and update the UI with it
-                final Experiences experiences = Experiences.buildExperiencesFromCursor(data);
-                if (experiences.size() > 0) {
+                // Create a new Experiences object from the returned data, keep a reference to it
+                // (in case we need to restore the activity), and update the UI with it
+                currentExperiences = Experiences.buildExperiencesFromCursor(data);
+                if (currentExperiences.size() > 0) {
                     String msgHead = getString(R.string.activity_experiences_showing_results_head);
                     String msgTail = getString(R.string.activity_experiences_showing_results_tail);
-                    Utils.showMessage(this, msgHead +" "+ experiences.size() +" "+ msgTail, TOAST, null);
+                    Utils.showMessage(this, msgHead +" "+ currentExperiences.size() +" "+ msgTail, TOAST, null);
 
-                    experienceListFragment.setExperiencesAndUpdateFragmentUI(experiences);
-                    addExperienceMarkersToMap(experiences);
+                    experienceListFragment.setExperiencesAndUpdateFragmentUI(currentExperiences);
+                    addExperienceMarkersToMap(currentExperiences);
                 }
                 else {
                     String msg = getString(R.string.activity_experiences_showing_results_none);
@@ -361,8 +420,8 @@ public class ExperiencesActivity extends AppCompatActivity implements LoaderCall
                 marker.remove();
         }
 
-        Experiences emptyExperiences = Experiences.buildExperiencesEmpty();
-        experienceListFragment.setExperiencesAndUpdateFragmentUI(emptyExperiences);
+        currentExperiences = Experiences.buildExperiencesEmpty();
+        experienceListFragment.setExperiencesAndUpdateFragmentUI(currentExperiences);
     }
 
 
