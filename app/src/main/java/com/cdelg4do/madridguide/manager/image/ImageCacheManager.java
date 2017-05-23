@@ -61,7 +61,7 @@ public class ImageCacheManager {
 
         // Picasso logging options
         Picasso.with(context).setLoggingEnabled(false);
-        Picasso.with(context).setIndicatorsEnabled(true);
+        Picasso.with(context).setIndicatorsEnabled(false);
     }
 
     /**
