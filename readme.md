@@ -23,7 +23,7 @@ The following external libraries are used:
 ### Screenshots:
 
 &nbsp;
-<kbd> <img alt="screenshot 1" src="https://cloud.githubusercontent.com/assets/18370149/26381036/66af8e4c-4022-11e7-8693-9390adad7c9a.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 2" src="https://cloud.githubusercontent.com/assets/18370149/26381037/66c9a138-4022-11e7-88e5-503097e63c2d.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 3" src="https://cloud.githubusercontent.com/assets/18370149/26381038/66d0c954-4022-11e7-94fb-2b2ff1f0e802.png" width="256"> </kbd>
+<kbd> <img alt="screenshot 1" src="https://cloud.githubusercontent.com/assets/18370149/26381036/66af8e4c-4022-11e7-8693-9390adad7c9a.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 2" src="https://cloud.githubusercontent.com/assets/18370149/26387722/0a65b1d8-4050-11e7-9351-c4014f1e07c4.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 3" src="https://cloud.githubusercontent.com/assets/18370149/26381038/66d0c954-4022-11e7-94fb-2b2ff1f0e802.png" width="256"> </kbd>
 
 &nbsp;
 <kbd> <img alt="screenshot 4" src="https://cloud.githubusercontent.com/assets/18370149/26381039/66d565c2-4022-11e7-9ce9-63f32ac868e9.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 5" src="https://cloud.githubusercontent.com/assets/18370149/26381040/66d66b7a-4022-11e7-8ec3-e405898c4175.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 6" src="https://cloud.githubusercontent.com/assets/18370149/26381041/66d77f10-4022-11e7-99a4-30da5df7cdf9.png" width="256"> </kbd>
