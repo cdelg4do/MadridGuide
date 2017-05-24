@@ -1,112 +1,108 @@
-﻿
-# Práctica Android Avanzado de Carlos Delgado Andrés
+# Madrid Guide
 
-**Madrid Guide** es un prototipo de aplicación para Android 4.0.1 ó superior, realizado con Android Studio 2.2.2.
+This is a small shops and activities guide in the city of Madrid for Android 4.0.1+ devices.
 
-Se trata de una guía de consulta de comercios y actividades turísitcas de la ciudad de Madrid. Durante su primera ejecución, la app descarga y cachea localmente los datos necesarios (datos sobre las tiendas y actividades, y todas las imágenes que se necesitan, unos 70 MB en total) para poder funcionar posteriormente sin conectarse a internet. Tanto para las tiendas como para las actividades, es posible consultarlas a través de un listado o mediante un mapa que muestra la ubicación geográfica de cada una.
+When the app is first launched, all necessary data (about 70 Mb, images included) is downloaded and cached on the device, so no Internet connection will be necessary the next time it is launched. If the cached data is older than one week, it all will be replaced with an updated copy.
 
-En sucesivos inicios, la aplicación comprobará si ya han transcurrido más de 7 días desde la última descarga de información, en cuyo caso procederá a eliminar todos los datos locales y a descargar una versión más reciente desde el servidor remoto.
+The user can check the shops/activities on an alphabetically sorted list or locate them geographically on the city map. A search bar is available on the screen top to filter results by the entered text, looking for matches on the item title or description. Both the list and the map update their results on every new search.
 
-La aplicación utiliza las siguientes librerías externas:
-- **Gson 2.8.0**: para el parseo de información en formato JSON procedente del servidor.
-- **Volley 1.0.0**: para la gestión del envío y recepción de peticiones http.
-- **Picasso 2.5.2**: para la gestión de la descarga y cacheo de imágenes localmente.
-- **OkHttp3 3.3.0** y **OkHttp3 Downloader 1.0.2**: para la gestión de la caché de disco de Picasso.
-- **Butter Knife 8.4.0**: para el enlazado de vistas de los distintos layout.
-- **Google Maps Service 10.0.0**: para el fragmento de mapa que muestra las tiendas/actividades cercanas.
-- **PhotoView** 1.2.4: para permitir el zoom en las imágenes de mapa estáticas.
+By clicking on a result, the user can visualize the detail of the selected shop/activity. This includes the address, localized description and opening hours, a link to the website (opened in external browser) and a zoomable static map image showing the item location and its surroundings.
 
-.
-### Paquetes de la aplicación:
+The following external libraries are used:
 
-Las clases que componen la aplicación se agrupan en los siguientes paquetes:
+- **Gson 2.8.0**: to parse the JSON data retrieved from the server.
+- **Volley 1.0.0**: for all the http request managing (except images).
+- **Picasso 2.5.2**: to manage the image download and caching.
+- **OkHttp3 3.3.0** y **OkHttp3 Downloader 1.0.2**: to manage Picasso's disk cache.
+- **Butter Knife 8.4.0**: to easily bind the layout views in the code.
+- **Google Maps Service 10.0.0**: to show the shops/activities on a map.
+- **PhotoView** 1.2.4: to turn the static map images into zoomable.
+
+
+&nbsp;
+### Screenshots:
+
+&nbsp;
+<kbd> <img alt="screenshot 1" src="https://cloud.githubusercontent.com/assets/18370149/26381036/66af8e4c-4022-11e7-8693-9390adad7c9a.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 2" src="https://cloud.githubusercontent.com/assets/18370149/26381037/66c9a138-4022-11e7-88e5-503097e63c2d.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 3" src="https://cloud.githubusercontent.com/assets/18370149/26381038/66d0c954-4022-11e7-94fb-2b2ff1f0e802.png" width="256"> </kbd>
+
+&nbsp;
+<kbd> <img alt="screenshot 4" src="https://cloud.githubusercontent.com/assets/18370149/26381039/66d565c2-4022-11e7-9ce9-63f32ac868e9.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 5" src="https://cloud.githubusercontent.com/assets/18370149/26381040/66d66b7a-4022-11e7-8ec3-e405898c4175.png" width="256"> </kbd> &nbsp; <kbd> <img alt="screenshot 6" src="https://cloud.githubusercontent.com/assets/18370149/26381041/66d77f10-4022-11e7-99a4-30da5df7cdf9.png" width="256"> </kbd>
+
+&nbsp;
+<kbd> <img alt="screenshot 7" src="https://cloud.githubusercontent.com/assets/18370149/26381042/66d85f8e-4022-11e7-80c9-f35feeef9d2c.png" width="768"> </kbd>
+
+&nbsp;
+<kbd> <img alt="screenshot 8" src="https://cloud.githubusercontent.com/assets/18370149/26381043/66e4b162-4022-11e7-8279-a7027fe1d876.png" width="768"> </kbd>
+
+
+&nbsp;
+### Application architecture:
+
+The app has been designed following the principles of a **Clean Architecture**, organizing it in several layers where the code dependencies point inwards only, and the inner layers do not know anything about the outer layers. This way a separation of concerns (presentation, businnes rules, data persistence, etc) is achieved while elements in each level can be tested relying on the tests of the previous level.
+
+Also, each layer uses its own data model so that they are independent of the specific implementation used in the other layers, as long as the interfaces between them remain unchanged. You can find additional information about Clean Architectures <a href="https://8thlight.com/blog/uncle-bob/2012/08/13/the-clean-architecture.html">**here**</a>.
+
+Following is a description of the packages the app is organized into:
 
 ##### - **activity**:
-Representan los controladores para cada pantalla de la aplicación (*MainActivity*, *ShopsActivity*, *ExperiencesActivity*, *ShopDetailActivity* y *ExperienceDetailActivity*). Existe además una clase adicional *SplashActivity* correspondiente a la Splash screen o pantalla de inicio de la aplicación.
+These are the Activity classes acting as controllers for each screen in the application.
 
 ##### - **adapter**:
-Contiene las clases adapter que permiten representar objetos del modelo en ciertas vistas de la aplicación como listas de elementos (*ShopsAdapter*, *ExperiencesAdapter*) o ventanas de información correspondientes a marcadores de un mapa (*ShopInfoWindowAdapter*, *ExperienceInfoWindowAdapter*).
+The Adapter classes to represent model objects on certain views like tables or maps.
 
 ##### - **fragment**:
-Contiene las clases que controlan los fragmentos correspondientes a los listados de elementos (*ShopListFragment* y *ExperienceListFragment*).
+The fragment controllers used for the shop and activity lists.
 
 ##### - **interactor**:
-Contiene las clases que actúan de intermediario entre los controladores y el modelo. Se invocan siempre desde las clases del paquete activity y realizan tareas pesadas en segundo plano, sirviéndose para ello de clases del paquete manager. Todos los objetos de interactor reciben un delegado (listener) que implementa un interfaz concreto para procesar en el hilo principal el resultado de la operación realizada por el interactor en segundo plano.
+These are the intermediary classes between the controllers and the model. They are always invoked from classes in the activity package and implement the use cases of the application. All interactors use a delegate or listener who acts as a callback after the interactor finishes its operation (usually in the background).
 
 ##### - **manager**:
-Contiene clases que realizan operaciones con datos de la aplicación y entidades del modelo, y permiten abstraer a los interactor de la forma concreta en que se implementan las operaciones que realizan. Estas clases manager se han implementado como *singletons*. Este paquete se divide en varios sub-paquetes, en función del tipo de datos que maneja cada manager:
+Here are the classes that disengage the interactors from the specific way operations are implemented. This classes have been implemented as singletons, and are organized into several sub-packages:
 
-- **db**: compuesto por las clases que manipulan una base de datos SQLite que sirve de caché local para almacenar la información enviada por el servidor. La principal clase del paquete es *DBManager* que gestiona la creación y conexión a la base de datos. Esta clase no es directamente accesible por los interactor, sino por objetos de este mismo paquete que implementan DAOPersistable (*ShopDAO* y *ExperienceDAO*). Cada uno de ellos presenta un interfaz a través del cuál se realizan las operaciones más comunes de acceso a la base de datos para Tiendas y Actividades, respectivamente, evitando tener que utilizar las llamadas a más bajo nivel del DBManager cada vez que debe hacerse una operación de lectura/escritura en la BBDD. Por último, un subpaquete **provider** contiene a la clase *MadridGuideProvider*, un Content Provider que permite acceder a los datos locales de un modo alternativo, mediante URIs y loaders.
-    
-- **image**: contiene la clase *ImageCacheManager* que se encarga de cachear y hacer disponibles localmente las imágenes de las tiendas y actividades. Internamente utiliza las librerías Picasso y OkHttp3 para la gestión de las cachés de imágenes (tanto en memoria como en disco).
-    
-- **net**: contiene la clase *NetworkManager* que se encarga del envío de peticiones http al servidor y de parsear las respuestas JSON correspondientes. Internamente utiliza las librerías de Volley y Gson para realizar estas tareas. También incluye métodos para detectar si el dispositivo está conectado a internet y de qué tipo de conexión dispone. También incluye a las clases *ShopsResponse* y *ExperiencesResponse* que modelan las respuestas JSON remotas y que son utilizadas por Gson para parsear los datos recibidos.
-    
+- **db**: classes that manage the local cache used to store data sent by the server, a SQLite database in the current version. The main class in the package is *DBManager*, who centralizes the accesses to the database. This class, however, is not directly accessed by the interactors. Objects implementing *DAOPersistable* (Data Access Object) act as the visible interface for DBManager, since they expose only the operations the interactors need to invoke. The class *MadridGuideProvider* in the subpackage **provider** is a **Content Provider**, a standard Android data access interface that exposes the application data through URIs and Loaders. This way data can be accessed both from within the application and from external applications, if needed.
+
+- *image*: contains the *ImageCacheManager* wich is in charge of downloading and caching the remote images.
+
+- *net*: contains the *NetworkManager* class in charge of sending Http requests and parsing the JSON responses, among other responsibilities like detecting the device connection type. This package also includes the auxiliary clases describing the remote JSON responses, necessary for the parsing process.
+
+   
 ##### - **model**:
-Contiene las clases que representan el modelo de la aplicación (*Shop* y *Experience*). Tambien contiene las clases que actúan como agregados de dichos objetos (*Shops* y *Experiences*), que implementan ambas los protocolos *IterableAggregate* y *UpdatableAggregate*.
+This package groups the main application model objects and the aggregates of this classes, as well as the interfaces implemented by them.
 
-Tambien contiene un subpaquete **mapper** con clases auxiliares que permiten transformar las clases (*ShopEntityToShopMapper* y *ExperienceEntityToExperienceMapper*) que modelan una respuesta JSON en sus correspondientes clases del modelo, para su posterior manejo en el resto de la aplicación.
+There is a sub-package **mapper** with utility classes used to map the classes representing JSON objects into the model classes.
 
 ##### - **navigator**:
-Contiene la clase *Navigator* que concentra toda la navegación entre activities de la aplicación, lo que permite en todo momento controlar cuándo se pasa de una activity a otra y qué información se va a compartir entre ellas.
+Here is the *Navigator* class, where all transitions between the application Activities are centralized.
 
 ##### - **view**:
-Agrupa clases auxiliares para el manejo de diferentes vistas, como *ShopRowViewHolder* y *ActivityRowViewHolder* que permiten representar Tiendas y Actividades en las vistas de un RecyclerView. También incluye la clase *OnElementClickedListener* que implementa un interfaz genérico para recibir y procesar las pulsaciones del usuario sobre alguna vista, tales como elementos de un RecyclerView.
+Groups utility classes to manage certain views, like the ViewHolders of the RecyclerViews. Also the class *OnElementClickedListener*, which implements a generic interface to listen to user taps on some views like the rows of a RecyclerView.
 
 ##### - **util**:
-Contiene la clase *Utils* que contiene funciones auxiliares para el manejo de la UI, las clase *Constants* que almacena variables de configuración de la aplicación y la clase *MainThread*, que simplifica la ejecución de código en el hilo principal desde hilos en segundo plano.
+This package contains the *Utils* class with auxiliary common methods to manage the UI, and the *MainThread* class that simplifies the execution of code blocks in the foreground from background threads.
 
-.
-### Consideraciones sobre la práctica:
+Also, the class *Constants* belongs in this package. It just stores the application settings like the remote server URLs, the disk cache size, the cache expiration limit or the initial area to show when maps are loaded.
 
-##### - Clase Experience:
-Para evitar confusiones con la clase Activity de Android, la clase que representa a cada entidad "actividad" se ha llamado *Experience*.
 
-##### - Claves API:
-Se ha omitido del repositorio la clave API para acceder a servicios de **Google Maps para Android**. Para poder compilar el proyecto correctamente, será necesario generar una nueva clave API desde la consola de desarrollador de Google, e incluirla en un nuevo fichero **/res/values/api_keys.xml** con este formato:
+&nbsp;
+### Additional considerations:
+
+- To avoid confusion between the Android *Activity* class and the activity model entities, the latter has been named 'Experience'.
+
+- The repository does not include an API key to use the **Google Maps for Android** services. In order to complile the project, it is mandatory to generate a new key from the <a href="https://console.developers.google.com">Google Developer console</a> and create a new file **/res/values/api_keys.xml** with the following content:
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="google_maps_api_key">TU CLAVE API AQUÍ</string>
+    <string name="google_maps_api_key">PUT YOUR API KEY HERE</string>
 </resources>
 ```
 
-##### - Descarga de imágenes remotas:
-Al comienzo de la ejecución, la clase *CacheAllImagesInteractor* construye una cola de peticiones para descargar al dispositivo todas las imágenes de las tiendas y actividades. La clase *ImageCacheManager* se encarga de realizar estas peticiones de manera paralela en segundo plano (el límite de descargas simultáneas de Picasso es 3). Cada vez que una petición termina (exitosamente o no), se comprueba si aún quedan otras peticiones pendientes de completarse, y si ya han finalizado todas se devuelve el control al hilo principal.
+- The interactor class *CacheAllImagesInteractor* builds an http request queue to download and cache the images for the shops and the activities. This queue is processed by the *ImageCacheManager* in the background, where the requests are launched concurrently (Picasso's limit is 3 downloads at the same time) to save time. Control to the main thread is not returned until all the requests have finished.
 
-De este modo se adelanta tiempo realizando las descargas de imágenes simultáneamente para después proseguir con la ejecución síncrona de la aplicación.
+- The method *InfoWindowAdapter.refreshInfoWindow()* is invoked after loading the image inside the Info Window of a map marker, and all it does is to hide the Info Window and showing it again immediately after. This is necessary because sometimes the image is not memory cached and needs to be retrieved from disk, wich takes a bit longer. The Info Window is a special view wich is rendered as a bitmap right after the map marker is clicked, and the disk cached images have no time to be loaded before the view renders. Invoking refreshInfoWindow() once the image is loaded into memory allows it to show in the Info Window.
 
-**NOTA:** la petición de descarga de actividades del servidor (**http://madrid-shops.com/json_new/getActivities.php**) devuelve una URL de imagen de logotipo incorrecta en la actividad "Museo del Prado", por lo que el logo de esta actividad no se muestra correctamente, pero esto no se debe a ningún problema en la aplicación.
+- The search criteria to filter shops/activities by the upper search bar is to match the entities where the search string is found in the name, description (in the localized language only) or address fields. All searches (including the initial search with no filters) are performed by a **Loader** wich is given the filtering data.
 
-Al finalizar la descarga de imágenes, si alguna de ellas falló se muestra un mensaje de aviso al usuario, pero la ejecución no se interrumpe sino que continúa normalmente. Como durante el resto de la ejecución la aplicación ya no se conecta a internet para descargar más imágenes, en el lugar de aquellas imágenes que hayan fallado se mostrará un placeholder de error.
+- The ShopsActivity and ExperiencesActivity activities have two different layouts: one for portrait orientation (map up, list down) and other for landscape orientation (map on the left, list on the right). To keep the on screen information when rotating the device, both activities implement the onSaveInstanceState() method that saves the necessary data (the list of entities being shown and the current map position). The saved data, if any, is restored in the onCreate() method.
 
-##### - Ventanas de información de los marcadores del mapa:
-Cuando el usuario pulsa en un marcador del mapa, se despliega una ventana de información que muestra tanto el nombre como el logotipo de la entidad pulsada (tienda o actividad). Si se tiene activada la opción de depuración de Picasso (activada por defecto), se observa que dicha imagen del logotipo se muestra en verde (indicando que se ha obtenido de la caché en memoria) y nunca en azul (procedente de la caché de disco).
-
-Esto se debe a que la ventana de información del marcador no es una vista normal (que representa una jerarquía de vistas a las cuales contiene), sino que se trata de una imagen renderizada que representa a las vistas que contiene. Dicha imagen se construye en el momento en que el usuario pulsa el marcador, por lo que para cuando la imagen del logotipo se ha cargado desde disco (es un proceso asíncrono) ya es demasiado tarde para mostrarla, apareciendo en su lugar siempre un placeholder.
-
-Para evitar esto, cuando la imagen a mostrar en la ventana de información se ha cargado correctamente, se invoca al método **refreshInfoWindow()** (ver las clases *InfoWindowAdapter*) que automáticamente oculta y vuelve a renderizar la ventana de información. Como en este caso la imagen ya se encontraba en la caché en memoria, entonces ya aparece visible.
-
-##### - Filtrado de entidades por texto de información de los marcadores del mapa:
-Cada una de las ventanas de Tiendas y Actividades dispone de una barra de búsqueda a través de la cuál el usuario puede filtrar los resultados que se muestran en pantalla mediante una cadena de texto.
-
-El criterio para realizar la búsqueda de texto es el siguiente: se buscarán aquellas entidades que contengan la cadena buscada (sin distinción de mayúsculas/minúsculas) en cualquiera de los campos **Nombre**, **Descripción** (solo en el idioma que corresponda) o **Dirección**.
-
-La búsqueda se realiza a través de un **CursorLoader** (el mismo mecanismo que se utiliza para obtener todas las entidades existentes cuando se crea la ventana), al que en este caso se le proporcionan además los datos para poder filtrar.
-
-##### - Layouts distintos según la orientación del dispositivo:
-Las actividades ShopsActivity y ExperiencesActivity disponen cada una de dos layouts diferentes, uno para cuando el dispositivo está orientado en modo retrato (mapa arriba y listado abajo) y otro para cuando el dispositivo se gira a modo apaisado (mapa a la izquierda y listado a la derecha).
-
-Para no perder la información sobre la búsqueda que hubiera hecho el usuario ni la posición en el mapa que estaba observando cuando se gira el dispositivo en una u otra posición, se ha implementado en ambas actividades el método **onSaveInstanceState()** para guardar el estado actual en el momento en que una actividad va a ser refrescada. En el método **onCreate()** de cada una de ellas se hace una comprobación para determinar si la actividad se está creando de cero o si está siendo restaurada, en cuyo caso se obtiene el estado salvado del Bundle obtenido y se vuelve a dejar la actividad igual que como estaba justo antes de ser destruida.
-
-En concreto, los datos que se salvaguardan para recuperar el estado de la acticidad son:
-- Una lista de las entidades (tiendas, actividades) que se estaba mostrando en esse momento.
-- Las coordenadas en que se estaba mostando el mapa, así como su nivel de zoom.
-
-Con dichos datos son suficientes para recoinstruir tanto el listado como el mapa (incluyendo su posición, zoom y marcadores).
-
-##### - Internacionalización:
-Tanto la información descargada como los textos en pantalla de la aplicación están disponibles en español y en inglés, seleccionándose automáticamente el primero cuando el idioma del sistema es español, y el segundo cuando se trata de cualquier otro idioma.
-
-Del mismo modo, a la hora de mostrar el detalle de una Tienda o Actividad existen algunos campos que están disponibles en ambos idiomas (tales como la descripción o el horario de apertura). En esos casos, se determina en tiempo de ejecución cuál es el valor que se debe mostrar. Tanto la clase Shop como la clase Experience disponen de métodos **getLocalizedDescription()** y **getLocalizedOpeningHours()** que devuelven la opción adecuada para cada caso.
+- All text literals in the application are available in Spanish and English, and will show depending on the system language (being English the default choice). Regarding the shops and activities data, both the descriptions and the opening hours are available in these two languages. When some of these fields needs to be shown, the appropriate choice is determined in runtime by invoking the **getLocalizedDescription()** or **getLocalizedOpeningHours()** methods of the entity.
